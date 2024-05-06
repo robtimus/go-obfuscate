@@ -32,58 +32,74 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 	return value
 }
 
+// strings.Builder's WriteString method is documented to return a nil error, so no need to check for it in methods below
+
+// ObfuscateParameterString obfuscates the given string.
+//
+// It is like ObfuscateString, but it returns any error instead of handling it internally.
+func (o HTTPParameterObfuscator) ObfuscateParameterString(s string) (string, error) {
+	builder := strings.Builder{}
+	err := o.obfuscateParameterString(s, &builder)
+	return builder.String(), err
+}
+
 // ObfuscateString implements the Obfuscator interface.
+//
+// It is like ObfuscateParameterString, but it handles any error internally according to the ErrorStrategy
+// provided when the HTTPParameterObfuscator instance was created.
 func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	builder := strings.Builder{}
+	err := o.obfuscateParameterString(s, &builder)
+	if err != nil {
+		switch o.onError {
+		case OnErrorLog:
+			o.printf("ObfuscateString error: %v\n", err)
+			break
+		case OnErrorInclude:
+			builder.WriteString(fmt.Sprintf("<error: %v>", err))
+			break
+		case OnErrorStop:
+			break
+		default:
+			o.panicf("ObfuscateString error: %v", err)
+			break
+		}
+	}
+	return builder.String()
+}
+
+func (o HTTPParameterObfuscator) obfuscateParameterString(s string, builder *strings.Builder) error {
 	index := strings.Index(s, "&")
 	for index != -1 {
-		if !o.obfuscateParameter(s[:index], &builder) {
-			return builder.String()
+		err := o.obfuscateParameter(s[:index], builder)
+		if err != nil {
+			return err
 		}
 		builder.WriteString("&")
 		s = s[index+1:]
 		index = strings.Index(s, "&")
 	}
-	o.obfuscateParameter(s, &builder)
-	return builder.String()
+	return o.obfuscateParameter(s, builder)
 }
 
-func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.Builder) bool {
+func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.Builder) error {
 	index := strings.Index(s, "=")
-	// strings.Builder's WriteString method is documented to return a nil error, so no need to check for it
 	if index == -1 {
 		builder.WriteString(s)
 	} else {
 		name, err := url.QueryUnescape(s[:index])
 		if err != nil {
-			o.handleError(err, builder)
-			return false
+			return err
 		}
 		builder.WriteString(s[:index+1])
 
 		value, err := url.QueryUnescape(s[index+1:])
 		if err != nil {
-			o.handleError(err, builder)
-			return false
+			return err
 		}
 		builder.WriteString(o.ObfuscateParameter(name, value))
 	}
-	return true
-}
-
-func (o HTTPParameterObfuscator) handleError(err error, builder *strings.Builder) {
-	switch o.onError {
-	case OnErrorLog:
-		o.printf("ObfuscateString error: %v\n", err)
-		break
-	case OnErrorInclude:
-		builder.WriteString(fmt.Sprintf("<error: %v>", err))
-		break
-	case OnErrorStop:
-		break
-	default:
-		o.panicf("ObfuscateString error: %v", err)
-	}
+	return nil
 }
 
 // UntilLength implements the Obfuscator interface.

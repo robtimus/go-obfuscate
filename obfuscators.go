@@ -21,13 +21,13 @@ var none = NewObfuscator(func(s string) string {
 	return s
 })
 
-// None returns an obufscator that does not obfuscate anything.
-// This can be used as default value.
+// None returns an obfuscator that does not obfuscate anything.
+// It can be used as default value.
 func None() Obfuscator {
 	return none
 }
 
-// WithFixedLength returns an obfuscator that replaces strings with the given fixed length asterisk (*) occurrences.
+// WithFixedLength returns an obfuscator that replaces strings with the given fixed length occurrences of a single asterisk (*).
 //
 // It panics if the fixed length is negative.
 func WithFixedLength(fixedLength int) Obfuscator {

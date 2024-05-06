@@ -3,7 +3,7 @@ package obfuscate
 import "strings"
 
 // SplitPoint represents a point in a string to split obfuscation.
-// Like Obfuscator.UntilLength this can be used to combine obfuscators. For instance, to obfuscate email addresses:
+// Like Obfuscator.UntilLength it can be used to combine obfuscators. For instance, to obfuscate email addresses:
 //
 //	localPartObfuscator := obfuscate.Portion()
 //	    .KeepAtStart(1)
@@ -16,7 +16,7 @@ import "strings"
 //	// Example input: test@example.org
 //	// Example output: t******t@example.org
 //
-// Unlike Obfuscator.UntilLength it's not possible to chain splitting, but it's of course possible to nest it:
+// Unlike Obfuscator.UntilLength it's not possible to chain splitting, but it's possible to nest it:
 //
 //	localPartObfuscator := obfuscate.Portion()
 //	    .KeepAtStart(1)

@@ -62,7 +62,9 @@ func (op ObfuscatorPrefix) Then(other Obfuscator) Obfuscator {
 }
 
 // NewObfuscatorPrefix creates a new ObfuscatorPrefix.
-// This function should not be used directly, only when implementing custom obfuscators.
+//
+// This function is intended only for implementing custom obfuscators.
+// It should not be used directly.
 func NewObfuscatorPrefix(o Obfuscator, prefixLength int) ObfuscatorPrefix {
 	minPrefixLength := 1
 	if obf, ok := o.(obfuscator); ok {

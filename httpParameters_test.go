@@ -28,7 +28,7 @@ func TestHTTPParameterDefaultLogging(t *testing.T) {
 }
 
 func TestObfuscateParameterString(t *testing.T) {
-	var obfuscator Obfuscator = newHTTPParameterObfuscator(nil)
+	obfuscator := newHTTPParameterObfuscator(nil)
 
 	input := "foo=bar&hello=world&empty=&no-value"
 
@@ -38,6 +38,47 @@ func TestObfuscateParameterString(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
+	}
+
+	actual, err := obfuscator.ObfuscateParameterString(input)
+
+	if actual != expected {
+		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
+	}
+
+	if err != nil {
+		t.Errorf("unexpected error: '%v'", err)
+	}
+}
+
+func TestObfuscateParameterStringWithError(t *testing.T) {
+	output := &strings.Builder{}
+	logger := log.New(output, "", 0)
+
+	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorPanic, Logger: logger})
+
+	input := "foo=bar&hello=world&empty=&no-value&err=%A&err=%B"
+
+	actualOutput, actualErr := obfuscator.ObfuscateParameterString(input)
+
+	expectedOutput := "foo=***&hello=world&empty=&no-value&err="
+
+	if actualOutput != expectedOutput {
+		t.Errorf("expected: '%v', actual: '%v'", expectedOutput, actualOutput)
+	}
+
+	expectedError := "invalid URL escape \"%A\""
+
+	if actualErr.Error() != expectedError {
+		t.Errorf("expected: '%v', actual: '%v'", expectedError, actualErr)
+	}
+
+	actualLogged := output.String()
+
+	expectedLogged := ""
+
+	if actualLogged != expectedLogged {
+		t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
 	}
 }
 
