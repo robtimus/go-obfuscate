@@ -27,10 +27,7 @@ func (o obfuscator) ObfuscateString(s string) string {
 }
 
 func (o obfuscator) UntilLength(prefixLength int) ObfuscatorPrefix {
-	if prefixLength < o.minPrefixLength {
-		log.Panicf("prefixLength: %d < %d", prefixLength, o.minPrefixLength)
-	}
-	return ObfuscatorPrefix{o, prefixLength}
+	return NewObfuscatorPrefix(o, prefixLength)
 }
 
 // NewObfuscator creates a new obfuscator that delegates to the given function.
@@ -62,4 +59,17 @@ func (op ObfuscatorPrefix) Then(other Obfuscator) Obfuscator {
 		}
 		return first.ObfuscateString(s[:lengthForFirst]) + second.ObfuscateString(s[lengthForFirst:])
 	}, lengthForFirst+1)
+}
+
+// NewObfuscatorPrefix creates a new ObfuscatorPrefix.
+// This function should not be used directly, only when implementing custom obfuscators.
+func NewObfuscatorPrefix(o Obfuscator, prefixLength int) ObfuscatorPrefix {
+	minPrefixLength := 1
+	if obf, ok := o.(obfuscator); ok {
+		minPrefixLength = obf.minPrefixLength
+	}
+	if prefixLength < minPrefixLength {
+		log.Panicf("prefixLength: %d < %d", prefixLength, minPrefixLength)
+	}
+	return ObfuscatorPrefix{o, prefixLength}
 }
