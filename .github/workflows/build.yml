@@ -34,13 +34,13 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{matrix.go}}
-      - name: vet
+      - name: go vet
         run: go vet -all ./...
-      - name: lint
+      - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-      - name: build
+      - name: go build
         run: go build ./...
-      - name: test
+      - name: go test
         run: go test ./...

@@ -1,0 +1,72 @@
+# Copyright 2024 Rob Spoor
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: SonarCloud
+
+on:
+  workflow_dispatch:
+  push:
+    # only run for branches, not tags
+    branches: ['**']
+  pull_request:
+  schedule:
+    - cron: '0 6 12 5,11 *'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    concurrency: sonar-${{ github.head_ref || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go (stable)
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: go vet
+        run: go vet -all -json ./... > go-vet.json
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --out-format checkstyle > golangci-lint-report.xml
+      - name: go test
+        run: go test -cover -coverprofile=go-coverage.out ./...
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SonarCloudToken }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: |
+            -Dsonar.organization=robtimus-github
+            -Dsonar.projectKey=robtimus:go-obfuscate
+            -Dsonar.projectName=go-obfuscate
+            -Dsonar.links.homepage=https://github.com/robtimus/go-obfuscate/
+            -Dsonar.links.issue=https://github.com/robtimus/go-obfuscate/issues
+            -Dsonar.links.scm=git+https://github.com/robtimus/go-obfuscate.git
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/*_test.go,go-vet.json,golangci-lint-report.xml,go-coverage.out
+            -Dsonar.tests=.
+            -Dsonar.test.inclusions=**/*_test.go
+            -Dsonar.go.govet.reportPaths=go-vet.json
+            -Dsonar.go.golangci-lint.reportPaths=golangci-lint-report.xml
+            -Dsonar.go.coverage.reportPaths=go-coverage.out
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SonarCloudToken }}
+          SONAR_HOST_URL: https://sonarcloud.io
