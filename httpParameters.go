@@ -54,15 +54,12 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 		switch o.onError {
 		case OnErrorLog:
 			o.printf("ObfuscateString error: %v\n", err)
-			break
 		case OnErrorInclude:
 			builder.WriteString(fmt.Sprintf("<error: %v>", err))
-			break
 		case OnErrorStop:
 			break
 		default:
 			o.panicf("ObfuscateString error: %v", err)
-			break
 		}
 	}
 	return builder.String()
