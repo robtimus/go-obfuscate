@@ -95,16 +95,16 @@ func TestObfuscateHeaderMultiMap(t *testing.T) {
 		"MULTIVALUED":   Portion().KeepAtEnd(2).Build(),
 	})
 	headerMap := map[string][]string{
-		"Content-Type":   []string{"application/json"},
-		"Content-Length": []string{"13"},
-		"Authorization":  []string{"Bearer someToken"},
-		"MultiValued":    []string{"value1", "value2"},
+		"Content-Type":   {"application/json"},
+		"Content-Length": {"13"},
+		"Authorization":  {"Bearer someToken"},
+		"MultiValued":    {"value1", "value2"},
 	}
 	expected := map[string][]string{
-		"Content-Type":   []string{"application/json"},
-		"Content-Length": []string{"13"},
-		"Authorization":  []string{"***"},
-		"MultiValued":    []string{"****e1", "****e2"},
+		"Content-Type":   {"application/json"},
+		"Content-Length": {"13"},
+		"Authorization":  {"***"},
+		"MultiValued":    {"****e1", "****e2"},
 	}
 
 	actual := obfuscator.ObfuscateHeaderMultiMap(headerMap)

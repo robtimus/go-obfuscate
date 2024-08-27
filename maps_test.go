@@ -49,20 +49,20 @@ func TestObfuscateMultiMap(t *testing.T) {
 		"KEY2": Portion().KeepAtEnd(2).Build(),
 	})
 	m := map[string][]string{
-		"key0": []string{"value00", "value01"},
-		"key1": []string{"value10", "value11"},
-		"key2": []string{"value20", "value21"},
-		"KEY0": []string{"VALUE00", "VALUE01"},
-		"KEY1": []string{"VALUE10", "VALUE11"},
-		"KEY2": []string{"VALUE20", "VALUE21"},
+		"key0": {"value00", "value01"},
+		"key1": {"value10", "value11"},
+		"key2": {"value20", "value21"},
+		"KEY0": {"VALUE00", "VALUE01"},
+		"KEY1": {"VALUE10", "VALUE11"},
+		"KEY2": {"VALUE20", "VALUE21"},
 	}
 	expected := map[string][]string{
-		"key0": []string{"value00", "value01"},
-		"key1": []string{"***", "***"},
-		"key2": []string{"value20", "value21"},
-		"KEY0": []string{"VALUE00", "VALUE01"},
-		"KEY1": []string{"VALUE10", "VALUE11"},
-		"KEY2": []string{"*****20", "*****21"},
+		"key0": {"value00", "value01"},
+		"key1": {"***", "***"},
+		"key2": {"value20", "value21"},
+		"KEY0": {"VALUE00", "VALUE01"},
+		"KEY1": {"VALUE10", "VALUE11"},
+		"KEY2": {"*****20", "*****21"},
 	}
 
 	actual := obfuscator.ObfuscateMultiMap(m)
