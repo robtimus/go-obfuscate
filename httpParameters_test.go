@@ -14,9 +14,7 @@ func TestHTTPParameterDefaultErrorStrategy(t *testing.T) {
 
 	expected := OnErrorLog
 
-	if actual != expected {
-		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
-	}
+	assertEqual(t, expected, actual)
 }
 
 func TestHTTPParameterDefaultLogging(t *testing.T) {
@@ -36,15 +34,11 @@ func TestObfuscateParameterString(t *testing.T) {
 
 	expected := "foo=***&hello=world&empty=&no-value"
 
-	if actual != expected {
-		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
-	}
+	assertEqual(t, expected, actual)
 
 	actual, err := obfuscator.ObfuscateParameterString(input)
 
-	if actual != expected {
-		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
-	}
+	assertEqual(t, expected, actual)
 
 	if err != nil {
 		t.Errorf("unexpected error: '%v'", err)

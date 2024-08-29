@@ -84,12 +84,12 @@ func TestObfuscateNilMultiMap(t *testing.T) {
 	}
 }
 
-func arraysDiffer(array1, array2 []string) bool {
-	if len(array1) != len(array2) {
+func slicesDiffer(slice1, slice2 []string) bool {
+	if len(slice1) != len(slice2) {
 		return true
 	}
-	for i, value1 := range array1 {
-		if value1 != array2[i] {
+	for i, value1 := range slice1 {
+		if value1 != slice2[i] {
 			return true
 		}
 	}
@@ -113,7 +113,7 @@ func multiMapsDiffer(map1, map2 map[string][]string) bool {
 		return true
 	}
 	for key, values1 := range map1 {
-		if values2, ok := map2[key]; !ok || arraysDiffer(values1, values2) {
+		if values2, ok := map2[key]; !ok || slicesDiffer(values1, values2) {
 			return true
 		}
 	}

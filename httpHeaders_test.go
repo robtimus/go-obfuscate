@@ -22,9 +22,7 @@ func TestObfuscateHeaderValue(t *testing.T) {
 		expected := parameters[i].expected
 		t.Run(fmt.Sprintf("applied to '%s': '%s'", headerName, headerValue), func(t *testing.T) {
 			actual := obfuscator.ObfuscateHeaderValue(headerName, headerValue)
-			if actual != expected {
-				t.Errorf("expected: '%s', actual: '%s'", expected, actual)
-			}
+			assertEqual(t, expected, actual)
 		})
 	}
 }
@@ -49,7 +47,7 @@ func TestObfuscateHeaderValues(t *testing.T) {
 		expected := parameters[i].expected
 		t.Run(fmt.Sprintf("applied to '%s': '%s'", headerName, headerValues), func(t *testing.T) {
 			actual := obfuscator.ObfuscateHeaderValues(headerName, headerValues)
-			if arraysDiffer(actual, expected) {
+			if slicesDiffer(actual, expected) {
 				t.Errorf("expected: '%s', actual: '%s'", expected, actual)
 			}
 		})

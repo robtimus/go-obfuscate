@@ -36,16 +36,16 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 
 // ObfuscateParameterString obfuscates the given string.
 //
-// It is like ObfuscateString, but it returns any error instead of handling it internally.
+// It is like [HTTPParameterObfuscator.ObfuscateString], but it returns any error instead of handling it internally.
 func (o HTTPParameterObfuscator) ObfuscateParameterString(s string) (string, error) {
 	builder := strings.Builder{}
 	err := o.obfuscateParameterString(s, &builder)
 	return builder.String(), err
 }
 
-// ObfuscateString implements the Obfuscator interface.
+// ObfuscateString implements the [Obfuscator] interface.
 //
-// It is like ObfuscateParameterString, but it handles any error internally according to the ErrorStrategy
+// It is like [HTTPParameterObfuscator.ObfuscateParameterString], but it handles any error internally according to the [ErrorStrategy]
 // provided when the HTTPParameterObfuscator instance was created.
 func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	builder := strings.Builder{}
@@ -99,7 +99,7 @@ func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.B
 	return nil
 }
 
-// UntilLength implements the Obfuscator interface.
+// UntilLength implements the [Obfuscator] interface.
 func (o HTTPParameterObfuscator) UntilLength(prefixLength int) ObfuscatorPrefix {
 	return NewObfuscatorPrefix(o, prefixLength)
 }

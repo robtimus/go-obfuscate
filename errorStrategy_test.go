@@ -7,9 +7,7 @@ func TestDefaultErrorStrategy(t *testing.T) {
 
 	expected := OnErrorLog
 
-	if actual != expected {
-		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
-	}
+	assertEqual(t, expected, actual)
 }
 
 func TestErrorStrategyOnErrorLog(t *testing.T) {

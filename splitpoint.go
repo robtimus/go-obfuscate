@@ -16,7 +16,7 @@ import "strings"
 //	// Example input: test@example.org
 //	// Example output: t******t@example.org
 //
-// Unlike Obfuscator.UntilLength it's not possible to chain splitting, but it's possible to nest it:
+// Unlike [Obfuscator].UntilLength it's not possible to chain splitting, but it's possible to nest it:
 //
 //	localPartObfuscator := obfuscate.Portion()
 //	    .KeepAtStart(1)

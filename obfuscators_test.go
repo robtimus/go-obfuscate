@@ -83,8 +83,12 @@ func TestWithFixedValue(t *testing.T) {
 
 func testObfuscateString(t *testing.T, obfuscator Obfuscator, input, expected string) {
 	actual := obfuscator.ObfuscateString(input)
+	assertEqual(t, expected, actual)
+}
+
+func assertEqual[T comparable](t *testing.T, expected, actual T) {
 	if actual != expected {
-		t.Errorf("expected: '%s', actual: '%s'", expected, actual)
+		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
 }
 

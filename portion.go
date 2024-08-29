@@ -41,7 +41,7 @@ func (pb *PortionBuilder) KeepAtEnd(value int) *PortionBuilder {
 }
 
 // AtLeastFromStart sets the minimum number of characters from the start that need to be obfuscated.
-// This will overrule any value for KeepAtStart or KeepAtEnd.
+// This will overrule any value for [PortionBuilder.KeepAtStart] or [PortionBuilder.KeepAtEnd].
 // Defaults to 0.
 //
 // It panics if the given value is negative.
@@ -52,7 +52,7 @@ func (pb *PortionBuilder) AtLeastFromStart(value int) *PortionBuilder {
 }
 
 // AtLeastFromEnd sets the minimum number of characters from the end that need to be obfuscated.
-// This will overrule any value for KeepAtStart or KeepAtEnd.
+// This will overrule any value for [PortionBuilder.KeepAtStart] or [PortionBuilder.KeepAtEnd].
 // Defaults to 0.
 //
 // It panics if the given value is negative.
@@ -65,9 +65,10 @@ func (pb *PortionBuilder) AtLeastFromEnd(value int) *PortionBuilder {
 // FixedTotalLength sets the fixed total length to use for obfuscated contents.
 // When obfuscating, the result will have the mask added until this total length has been reached.
 //
-// Note: when used in combination with KeepAtStart and/or KeepAtEnd, this total length must be at least the sum of both other values.
-// When used in combination with both, parts of the input may be repeated in the obfuscated content if the input's length is less than the combined
-// number of characters to keep.
+// Note: when used in combination with [PortionBuilder.KeepAtStart] and/or [PortionBuilder.KeepAtEnd],
+// this total length must be at least the sum of both other values.
+// When used in combination with both, parts of the input may be repeated in the obfuscated content
+// if the input's length is less than the combined number of characters to keep.
 //
 // It panics if the given value is negative.
 func (pb *PortionBuilder) FixedTotalLength(value int) *PortionBuilder {
@@ -89,7 +90,8 @@ func (pb *PortionBuilder) Mask(mask string) *PortionBuilder {
 
 // Build returns an obfuscator that obfuscates a specific portion of their input, using the values configured in this builder.
 //
-// It panics if a FixedTotalLength is set that is smaller than the sum of the (default) values for KeepAtStart and KeepAtEnd.
+// It panics if a [PortionBuilder.FixedTotalLength] is set that is smaller than the sum of the (default) values for
+// [PortionBuilder.KeepAtStart] and [PortionBuilder.KeepAtEnd].
 func (pb *PortionBuilder) Build() Obfuscator {
 	keepAtStart := valueOrDefault(pb.keepAtStart, 0)
 	keepAtEnd := valueOrDefault(pb.keepAtEnd, 0)
