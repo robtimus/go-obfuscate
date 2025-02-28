@@ -50,7 +50,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SonarCloudToken }}
           SONAR_HOST_URL: https://sonarcloud.io
         with:
-          args: |
+          args: >
             -Dsonar.organization=robtimus-github
             -Dsonar.projectKey=robtimus:go-obfuscate
             -Dsonar.projectName=go-obfuscate
