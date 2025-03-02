@@ -124,7 +124,7 @@ func TestAtNthWithOccurrence2(t *testing.T) {
 
 func TestNewSplitPointWithNegativeSplitLength(t *testing.T) {
 	testPanic(t, "Negative splitLength", func() {
-		NewSplitPoint(func(s string) int {
+		NewSplitPoint(func(_ string) int {
 			return -1
 		}, -1)
 	}, "splitLength: -1 < 0")
@@ -155,7 +155,7 @@ func TestNewSplitPointWithSplitLength0(t *testing.T) {
 }
 
 func TestNewSplitPointWithSplitAtStart(t *testing.T) {
-	splitPoint := NewSplitPoint(func(s string) int {
+	splitPoint := NewSplitPoint(func(_ string) int {
 		return 0
 	}, 0)
 	obfuscator := splitPoint.SplitTo(WithFixedLength(3), AllWithMask("x"))

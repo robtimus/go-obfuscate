@@ -82,17 +82,23 @@ func TestWithFixedValue(t *testing.T) {
 }
 
 func testObfuscateString(t *testing.T, obfuscator Obfuscator, input, expected string) {
+	t.Helper()
+
 	actual := obfuscator.ObfuscateString(input)
 	assertEqual(t, expected, actual)
 }
 
 func assertEqual[T comparable](t *testing.T, expected, actual T) {
+	t.Helper()
+
 	if actual != expected {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
 }
 
 func testPanic(t *testing.T, name string, action func(), expectedMessage string) {
+	t.Helper()
+
 	t.Run(name, func(t *testing.T) {
 		defer func() {
 			r := recover()

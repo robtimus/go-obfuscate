@@ -47,7 +47,7 @@ func WithFixedLengthWithMask(fixedLength int, mask string) Obfuscator {
 
 // WithFixedValue returns an obfuscator that replaces strings with the given fixed value.
 func WithFixedValue(fixedValue string) Obfuscator {
-	return NewObfuscator(func(s string) string {
+	return NewObfuscator(func(_ string) string {
 		return fixedValue
 	})
 }

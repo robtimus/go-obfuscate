@@ -31,6 +31,8 @@ func TestErrorStrategyUnknown(t *testing.T) {
 }
 
 func testErrorStrategy(t *testing.T, onError ErrorStrategy, expectedValue int, expectedString string) {
+	t.Helper()
+
 	actualValue := int(onError)
 
 	if actualValue != expectedValue {

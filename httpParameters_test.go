@@ -116,6 +116,8 @@ func TestObfuscateParameterStringOnErrorPanic(t *testing.T) {
 }
 
 func testObfuscateParameterStringWithErrors(t *testing.T, onError ErrorStrategy, expectedOutput, expectedLogged string) {
+	t.Helper()
+
 	output := &strings.Builder{}
 	logger := log.New(output, "", 0)
 

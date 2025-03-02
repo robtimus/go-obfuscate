@@ -1,0 +1,31 @@
+linters:
+  enable-all: true
+  disable:
+    - exhaustruct
+    - forbidigo
+    - gochecknoglobals
+    - nlreturn
+    - tenv
+    - testpackage
+    - wrapcheck
+    - wsl
+
+linters-settings:
+  goconst:
+    ignore-tests: true
+  ireturn:
+    allow:
+      - error
+      - generic
+      - Obfuscator
+  lll:
+    line-length: 180
+  paralleltest:
+    ignore-missing: true
+  varnamelen:
+    ignore-decls:
+      - i int
+      - s string
+      - m map[string]string
+      - m map[string][]string
+      - o Obfuscator

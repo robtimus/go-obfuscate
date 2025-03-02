@@ -58,7 +58,7 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 			builder.WriteString(fmt.Sprintf("<error: %v>", err))
 		case OnErrorStop:
 			break
-		default:
+		case OnErrorPanic:
 			o.panicf("ObfuscateString error: %v", err)
 		}
 	}

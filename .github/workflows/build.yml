@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.21.x', '1.22.x', '1.23.x', '1.24.x', 'stable']
+        go: ['1.22.x', '1.23.x', '1.24.x', 'stable']
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
