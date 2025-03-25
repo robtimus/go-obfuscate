@@ -54,7 +54,7 @@ func TestObfuscatePortionWithFixedLengthExample(t *testing.T) {
 }
 
 func TestObfuscateUpperCaseExample(t *testing.T) {
-	obfuscator := obfuscate.NewObfuscator(func(text string) string { return strings.ToUpper(text) })
+	obfuscator := obfuscate.NewObfuscator(strings.ToUpper)
 	obfuscated := obfuscator.ObfuscateString("Hello World")
 	assertEqual(t, "HELLO WORLD", obfuscated)
 }
@@ -167,12 +167,16 @@ func TestMapsExample(t *testing.T) {
 }
 
 func assertEqual[T comparable](t *testing.T, expected, actual T) {
+	t.Helper()
+
 	if actual != expected {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
 }
 
 func assertEqualSlices[T comparable](t *testing.T, expected, actual []T) {
+	t.Helper()
+
 	if len(expected) != len(actual) {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
@@ -184,6 +188,8 @@ func assertEqualSlices[T comparable](t *testing.T, expected, actual []T) {
 }
 
 func assertEqualMaps[K comparable, V comparable](t *testing.T, expected, actual map[K]V) {
+	t.Helper()
+
 	if len(expected) != len(actual) {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}

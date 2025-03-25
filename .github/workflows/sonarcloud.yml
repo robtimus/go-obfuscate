@@ -38,10 +38,10 @@ jobs:
       - name: go vet
         run: go vet -all -json ./... > go-vet.json
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
           version: latest
-          args: --out-format checkstyle > golangci-lint-report.xml
+          args: --output.checkstyle.path golangci-lint-report.xml
       - name: go test
         run: go test -cover -coverprofile=go-coverage.out ./...
       - name: SonarQube Scan

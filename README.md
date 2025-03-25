@@ -97,7 +97,7 @@ Note that if `KeepAtStart` and `KeepAtEnd` are both specified, parts of the inpu
 Converts any function that takes a string as input and returns a string into an obfuscator.
 
 ```go
-obfuscator := obfuscate.NewObfuscator(func(text string) string { return strings.ToUpper(text) })
+obfuscator := obfuscate.NewObfuscator(strings.ToUpper)
 obfuscated := obfuscator.ObfuscateString("Hello World")
 // obfuscated is "HELLO WORLD"
 ```

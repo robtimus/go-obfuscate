@@ -1,31 +1,49 @@
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
     - exhaustruct
     - forbidigo
     - gochecknoglobals
     - nlreturn
-    - tenv
     - testpackage
     - wrapcheck
     - wsl
 
-linters-settings:
-  goconst:
-    ignore-tests: true
-  ireturn:
-    allow:
-      - error
-      - generic
-      - Obfuscator
-  lll:
-    line-length: 180
-  paralleltest:
-    ignore-missing: true
-  varnamelen:
-    ignore-decls:
-      - i int
-      - s string
-      - m map[string]string
-      - m map[string][]string
-      - o Obfuscator
+  settings:
+    ireturn:
+      allow:
+        - error
+        - generic
+        - Obfuscator
+    lll:
+      line-length: 180
+    paralleltest:
+      ignore-missing: true
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+    varnamelen:
+      ignore-decls:
+        - i int
+        - s string
+        - m map[string]string
+        - m map[string][]string
+        - o Obfuscator
+
+  exclusions:
+    rules:
+      - path: '(.+)_test\.go'
+        linters:
+          - goconst
+      - path: '(.+)/examples_test\.go'
+        linters:
+          - depguard
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
