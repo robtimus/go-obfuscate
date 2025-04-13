@@ -24,6 +24,25 @@ type HTTPParameterObfuscatorOptions struct {
 	Logger *log.Logger
 }
 
+// HTTPParameters creates a new HTTP parameter obfuscator.
+func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
+	obfuscatorMap := map[string]Obfuscator{}
+	for headerName, obfuscator := range obfuscators {
+		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
+	}
+
+	var onError ErrorStrategy
+	printf := defaultPrintf
+	panicf := defaultPanicf
+	if options != nil {
+		onError = options.OnError
+		printf = options.Logger.Printf
+		panicf = options.Logger.Panicf
+	}
+
+	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf, panicf: panicf}
+}
+
 // ObfuscateParameter obfuscates the given value for a parameter with the given name.
 func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 	if obfuscator, ok := o.obfuscators[name]; ok {
@@ -65,6 +84,11 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	return builder.String()
 }
 
+// UntilLength implements the [Obfuscator] interface.
+func (o HTTPParameterObfuscator) UntilLength(prefixLength int) ObfuscatorPrefix {
+	return NewObfuscatorPrefix(o, prefixLength)
+}
+
 func (o HTTPParameterObfuscator) obfuscateParameterString(s string, builder *strings.Builder) error {
 	index := strings.Index(s, "&")
 	for index != -1 {
@@ -99,34 +123,10 @@ func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.B
 	return nil
 }
 
-// UntilLength implements the [Obfuscator] interface.
-func (o HTTPParameterObfuscator) UntilLength(prefixLength int) ObfuscatorPrefix {
-	return NewObfuscatorPrefix(o, prefixLength)
-}
-
 var defaultPrintf = func(format string, v ...any) {
 	fmt.Printf(format, v...)
 }
 
 var defaultPanicf = func(format string, v ...any) {
 	log.Panicf(format, v...)
-}
-
-// HTTPParameters creates a new HTTP parameter obfuscator.
-func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
-	obfuscatorMap := map[string]Obfuscator{}
-	for headerName, obfuscator := range obfuscators {
-		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
-	}
-
-	var onError ErrorStrategy
-	printf := defaultPrintf
-	panicf := defaultPanicf
-	if options != nil {
-		onError = options.OnError
-		printf = options.Logger.Printf
-		panicf = options.Logger.Panicf
-	}
-
-	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf, panicf: panicf}
 }

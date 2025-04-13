@@ -7,6 +7,15 @@ type HTTPHeaderObfuscator struct {
 	obfuscators map[string]Obfuscator
 }
 
+// HTTPHeaders creates a new HTTP header obfuscator.
+func HTTPHeaders(obfuscators map[string]Obfuscator) HTTPHeaderObfuscator {
+	obfuscatorMap := map[string]Obfuscator{}
+	for headerName, obfuscator := range obfuscators {
+		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
+	}
+	return HTTPHeaderObfuscator{obfuscators: obfuscatorMap}
+}
+
 // ObfuscateHeaderValue obfuscates the value for a single header.
 func (o HTTPHeaderObfuscator) ObfuscateHeaderValue(headerName, headerValue string) string {
 	if obfuscator, ok := o.obfuscators[strings.ToLower(headerName)]; ok {
@@ -43,13 +52,4 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderMultiMap(headerMap map[string][]str
 		result[headerName] = o.ObfuscateHeaderValues(headerName, headerValue)
 	}
 	return result
-}
-
-// HTTPHeaders creates a new HTTP header obfuscator.
-func HTTPHeaders(obfuscators map[string]Obfuscator) HTTPHeaderObfuscator {
-	obfuscatorMap := map[string]Obfuscator{}
-	for headerName, obfuscator := range obfuscators {
-		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
-	}
-	return HTTPHeaderObfuscator{obfuscators: obfuscatorMap}
 }

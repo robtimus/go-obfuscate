@@ -33,21 +33,6 @@ type SplitPoint struct {
 	splitLength int
 }
 
-// SplitTo creates an obfuscator that splits obfuscation at this split point.
-// The part of the string before the split point will be obfuscated by the first obfuscator, the part after the split point by the second.
-func (sp SplitPoint) SplitTo(beforeSplitPoint, afterSplitPoint Obfuscator) Obfuscator {
-	return NewObfuscator(func(s string) string {
-		splitStartIndex := sp.splitStart(s)
-		if splitStartIndex < 0 {
-			return beforeSplitPoint.ObfuscateString(s)
-		}
-		splitEndIndex := splitStartIndex + sp.splitLength
-		return beforeSplitPoint.ObfuscateString(s[:splitStartIndex]) +
-			s[splitStartIndex:splitEndIndex] +
-			afterSplitPoint.ObfuscateString(s[splitEndIndex:])
-	})
-}
-
 // NewSplitPoint creates a new split point.
 //
 // splitStart is a function that takes a string and returns the 0-based index where to split, or a negative value if obfuscation should not be split.
@@ -101,4 +86,19 @@ func nthIndex(s, substr string, occurrence int) int {
 		return index
 	}
 	return sourceStart + index
+}
+
+// SplitTo creates an obfuscator that splits obfuscation at this split point.
+// The part of the string before the split point will be obfuscated by the first obfuscator, the part after the split point by the second.
+func (sp SplitPoint) SplitTo(beforeSplitPoint, afterSplitPoint Obfuscator) Obfuscator {
+	return NewObfuscator(func(s string) string {
+		splitStartIndex := sp.splitStart(s)
+		if splitStartIndex < 0 {
+			return beforeSplitPoint.ObfuscateString(s)
+		}
+		splitEndIndex := splitStartIndex + sp.splitLength
+		return beforeSplitPoint.ObfuscateString(s[:splitStartIndex]) +
+			s[splitStartIndex:splitEndIndex] +
+			afterSplitPoint.ObfuscateString(s[splitEndIndex:])
+	})
 }

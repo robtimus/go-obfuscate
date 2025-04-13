@@ -5,6 +5,15 @@ type MapObfuscator[K comparable] struct {
 	obfuscators map[K]Obfuscator
 }
 
+// Maps creates a new map obfuscator.
+func Maps[K comparable](obfuscators map[K]Obfuscator) MapObfuscator[K] {
+	obfuscatorMap := map[K]Obfuscator{}
+	for key, obfuscator := range obfuscators {
+		obfuscatorMap[key] = obfuscator
+	}
+	return MapObfuscator[K]{obfuscators: obfuscatorMap}
+}
+
 // ObfuscateMap obfuscates all values in a map.
 func (o MapObfuscator[K]) ObfuscateMap(m map[K]string) map[K]string {
 	result := map[K]string{}
@@ -33,13 +42,4 @@ func (o MapObfuscator[K]) ObfuscateMultiMap(m map[K][]string) map[K][]string {
 		}
 	}
 	return result
-}
-
-// Maps creates a new map obfuscator.
-func Maps[K comparable](obfuscators map[K]Obfuscator) MapObfuscator[K] {
-	obfuscatorMap := map[K]Obfuscator{}
-	for key, obfuscator := range obfuscators {
-		obfuscatorMap[key] = obfuscator
-	}
-	return MapObfuscator[K]{obfuscators: obfuscatorMap}
 }

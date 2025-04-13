@@ -47,20 +47,6 @@ type ObfuscatorPrefix struct {
 	prefixLength int
 }
 
-// Then returns an obfuscator that first uses the obfuscator that was used to create the receiver for the length of the receiver,
-// then another obfuscator.
-func (op ObfuscatorPrefix) Then(other Obfuscator) Obfuscator {
-	first := op.obfuscator
-	lengthForFirst := op.prefixLength
-	second := other
-	return newObfuscator(func(s string) string {
-		if len(s) <= lengthForFirst {
-			return first.ObfuscateString(s)
-		}
-		return first.ObfuscateString(s[:lengthForFirst]) + second.ObfuscateString(s[lengthForFirst:])
-	}, lengthForFirst+1)
-}
-
 // NewObfuscatorPrefix creates a new ObfuscatorPrefix.
 //
 // This function is intended only for implementing custom obfuscators.
@@ -74,4 +60,18 @@ func NewObfuscatorPrefix(o Obfuscator, prefixLength int) ObfuscatorPrefix {
 		log.Panicf("prefixLength: %d < %d", prefixLength, minPrefixLength)
 	}
 	return ObfuscatorPrefix{o, prefixLength}
+}
+
+// Then returns an obfuscator that first uses the obfuscator that was used to create the receiver for the length of the receiver,
+// then another obfuscator.
+func (op ObfuscatorPrefix) Then(other Obfuscator) Obfuscator {
+	first := op.obfuscator
+	lengthForFirst := op.prefixLength
+	second := other
+	return newObfuscator(func(s string) string {
+		if len(s) <= lengthForFirst {
+			return first.ObfuscateString(s)
+		}
+		return first.ObfuscateString(s[:lengthForFirst]) + second.ObfuscateString(s[lengthForFirst:])
+	}, lengthForFirst+1)
 }
