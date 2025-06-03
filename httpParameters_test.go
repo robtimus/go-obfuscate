@@ -45,6 +45,28 @@ func TestObfuscateParameterString(t *testing.T) {
 	}
 }
 
+func TestObfuscateParameterStringWithNormilize(t *testing.T) {
+	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{
+		NormilizeParamterName: strings.ToUpper,
+	})
+
+	input := "FOO=bar&hello=world&EMptY=&no-value"
+
+	actual := obfuscator.ObfuscateString(input)
+
+	expected := "FOO=***&hello=world&EMptY=&no-value"
+
+	assertEqual(t, expected, actual)
+
+	actual, err := obfuscator.ObfuscateParameterString(input)
+
+	assertEqual(t, expected, actual)
+
+	if err != nil {
+		t.Errorf("unexpected error: '%v'", err)
+	}
+}
+
 func TestObfuscateParameterStringWithError(t *testing.T) {
 	output := &strings.Builder{}
 	logger := log.New(output, "", 0)
