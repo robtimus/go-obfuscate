@@ -46,9 +46,7 @@ func TestObfuscateParameterString(t *testing.T) {
 }
 
 func TestObfuscateParameterStringWithNormilize(t *testing.T) {
-	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{
-		NormilizeParamterName: strings.ToUpper,
-	})
+	obfuscator := newHTTPParameterObfuscator(nil)
 
 	input := "FOO=bar&hello=world&EMptY=&no-value"
 

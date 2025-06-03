@@ -10,11 +10,10 @@ import (
 // HTTPParameterObfuscator represents an object that can obfuscate HTTP query and form parameter strings,
 // as well as separate parameter values.
 type HTTPParameterObfuscator struct {
-	obfuscators            map[string]Obfuscator
-	onError                ErrorStrategy
-	printf                 func(format string, v ...any)
-	panicf                 func(format string, v ...any)
-	normilizeParameterName func(name string) string
+	obfuscators map[string]Obfuscator
+	onError     ErrorStrategy
+	printf      func(format string, v ...any)
+	panicf      func(format string, v ...any)
 }
 
 // HTTPParameterObfuscatorOptions represents the configurable options used by HTTPParameterObfuscator instances.
@@ -23,38 +22,30 @@ type HTTPParameterObfuscatorOptions struct {
 	OnError ErrorStrategy
 	// Logger represents the optional logger to use in case OnError is OnErrorLog or OnErrorPanic.
 	Logger *log.Logger
-	// NormilizeParamterName represents the optional func for normilizing paramter names.
-	NormilizeParamterName func(name string) string
 }
 
 // HTTPParameters creates a new HTTP parameter obfuscator.
 func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
-	var o = HTTPParameterObfuscator{
-		printf:                 defaultPrintf,
-		panicf:                 defaultPanicf,
-		normilizeParameterName: strings.ToLower,
-		obfuscators:            make(map[string]Obfuscator),
-	}
-
-	if options != nil {
-		o.onError = options.OnError
-		if options.Logger != nil {
-			o.printf = options.Logger.Printf
-			o.panicf = options.Logger.Panicf
-		}
-	}
-
+	obfuscatorMap := map[string]Obfuscator{}
 	for headerName, obfuscator := range obfuscators {
-		o.obfuscators[o.normilizeParameterName(headerName)] = obfuscator
+		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
 	}
 
-	return o
+	var onError ErrorStrategy
+	printf := defaultPrintf
+	panicf := defaultPanicf
+	if options != nil {
+		onError = options.OnError
+		printf = options.Logger.Printf
+		panicf = options.Logger.Panicf
+	}
+
+	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf, panicf: panicf}
 }
 
 // ObfuscateParameter obfuscates the given value for a parameter with the given name.
 func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
-	name = o.normilizeParameterName(name)
-	if obfuscator, ok := o.obfuscators[name]; ok {
+	if obfuscator, ok := o.obfuscators[strings.ToLower(name)]; ok {
 		return obfuscator.ObfuscateString(value)
 	}
 	return value
