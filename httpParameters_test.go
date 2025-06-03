@@ -28,11 +28,11 @@ func TestHTTPParameterDefaultLogging(t *testing.T) {
 func TestObfuscateParameterString(t *testing.T) {
 	obfuscator := newHTTPParameterObfuscator(nil)
 
-	input := "foo=bar&hello=world&empty=&no-value"
+	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value"
 
 	actual := obfuscator.ObfuscateString(input)
 
-	expected := "foo=***&hello=world&empty=&no-value"
+	expected := "foo=***&hello=world&FOO=BAR&empty=&no-value"
 
 	assertEqual(t, expected, actual)
 
@@ -51,11 +51,11 @@ func TestObfuscateParameterStringWithError(t *testing.T) {
 
 	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorPanic, Logger: logger})
 
-	input := "foo=bar&hello=world&empty=&no-value&err=%A&err=%B"
+	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
 	actualOutput, actualErr := obfuscator.ObfuscateParameterString(input)
 
-	expectedOutput := "foo=***&hello=world&empty=&no-value&err="
+	expectedOutput := "foo=***&hello=world&FOO=BAR&empty=&no-value&err="
 
 	if actualOutput != expectedOutput {
 		t.Errorf("expected: '%v', actual: '%v'", expectedOutput, actualOutput)
@@ -78,19 +78,19 @@ func TestObfuscateParameterStringWithError(t *testing.T) {
 
 func TestObfuscateParameterStringOnErrorLog(t *testing.T) {
 	testObfuscateParameterStringWithErrors(t, OnErrorLog,
-		"foo=***&hello=world&empty=&no-value&err=",
+		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",
 		"ObfuscateString error: invalid URL escape \"%A\"\n")
 }
 
 func TestObfuscateParameterStringOnErrorInclude(t *testing.T) {
 	testObfuscateParameterStringWithErrors(t, OnErrorInclude,
-		"foo=***&hello=world&empty=&no-value&err=<error: invalid URL escape \"%A\">",
+		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=<error: invalid URL escape \"%A\">",
 		"")
 }
 
 func TestObfuscateParameterStringOnErrorStop(t *testing.T) {
 	testObfuscateParameterStringWithErrors(t, OnErrorStop,
-		"foo=***&hello=world&empty=&no-value&err=",
+		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",
 		"")
 }
 
@@ -100,7 +100,7 @@ func TestObfuscateParameterStringOnErrorPanic(t *testing.T) {
 
 	var obfuscator Obfuscator = newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorPanic, Logger: logger})
 
-	input := "foo=bar&hello=world&empty=&no-value&err=%A&err=%B"
+	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
 	testPanic(t, "TestObfuscateParameterStringOnErrorPanic", func() {
 		obfuscator.ObfuscateString(input)
@@ -123,7 +123,7 @@ func testObfuscateParameterStringWithErrors(t *testing.T, onError ErrorStrategy,
 
 	var obfuscator Obfuscator = newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: onError, Logger: logger})
 
-	input := "foo=bar&hello=world&empty=&no-value&err=%A&err=%B"
+	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
 	actualOutput := obfuscator.ObfuscateString(input)
 
