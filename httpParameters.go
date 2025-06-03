@@ -27,8 +27,8 @@ type HTTPParameterObfuscatorOptions struct {
 // HTTPParameters creates a new HTTP parameter obfuscator.
 func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
 	obfuscatorMap := map[string]Obfuscator{}
-	for headerName, obfuscator := range obfuscators {
-		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
+	for propertyName, obfuscator := range obfuscators {
+		obfuscatorMap[propertyName] = obfuscator
 	}
 
 	var onError ErrorStrategy
