@@ -36,8 +36,10 @@ func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObf
 	panicf := defaultPanicf
 	if options != nil {
 		onError = options.OnError
-		printf = options.Logger.Printf
-		panicf = options.Logger.Panicf
+		if options.Logger != nil {
+			printf = options.Logger.Printf
+			panicf = options.Logger.Panicf
+		}
 	}
 
 	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf, panicf: panicf}
