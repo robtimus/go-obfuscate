@@ -13,6 +13,7 @@ linters:
   settings:
     ireturn:
       allow:
+        - empty
         - error
         - generic
         - Obfuscator
@@ -36,6 +37,8 @@ linters:
     rules:
       - path: '(.+)_test\.go'
         linters:
+          - dupl
+          - funlen
           - goconst
       - path: '(.+)/examples_test\.go'
         linters:

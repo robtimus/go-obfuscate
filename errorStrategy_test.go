@@ -1,6 +1,10 @@
 package obfuscate
 
-import "testing"
+import (
+	"log"
+	"strings"
+	"testing"
+)
 
 func TestDefaultErrorStrategy(t *testing.T) {
 	var actual ErrorStrategy
@@ -44,4 +48,16 @@ func testErrorStrategy(t *testing.T, onError ErrorStrategy, expectedValue int, e
 	if actualString != expectedString {
 		t.Errorf("expected: '%v', actual: '%v'", expectedString, actualString)
 	}
+}
+
+type CapturingLogger struct {
+	*log.Logger
+	*strings.Builder
+}
+
+func newCapturingLogger() *CapturingLogger {
+	output := &strings.Builder{}
+	logger := log.New(output, "", 0)
+
+	return &CapturingLogger{logger, output}
 }

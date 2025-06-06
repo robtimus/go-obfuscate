@@ -346,6 +346,26 @@ func TestFirstTwoCharactersOnly(t *testing.T) {
 	}
 }
 
+func TestCustomMask(t *testing.T) {
+	obfuscator := Portion().KeepAtEnd(math.MaxInt).AtLeastFromStart(2).Mask("x").Build()
+	parameters := []struct {
+		input, expected string
+	}{
+		{"foo", "xxo"},
+		{"foobar", "xxobar"},
+		{"hello", "xxllo"},
+		{"hello world", "xxllo world"},
+		{"", ""},
+	}
+	for i := range parameters {
+		input := parameters[i].input
+		expected := parameters[i].expected
+		t.Run(fmt.Sprintf("KeepAtEnd(MAX).AtLeastFromStart(2) applied to '%s'", input), func(t *testing.T) {
+			testObfuscateString(t, obfuscator, input, expected)
+		})
+	}
+}
+
 func TestInvalidInput(t *testing.T) {
 	testPanic(t, "KeepAtStart < 0", func() {
 		Portion().KeepAtStart(-1)
@@ -374,4 +394,8 @@ func TestInvalidInput(t *testing.T) {
 	testPanic(t, "KeepAtStart + KeepAtEnd > FixedTotalLength", func() {
 		Portion().KeepAtStart(4).KeepAtEnd(4).FixedTotalLength(7).Build()
 	}, "FixedTotalLength (7) < KeepAtStart (4) + KeepAtEnd (4)")
+
+	testPanic(t, "Empty mask char", func() {
+		Portion().Mask("")
+	}, "mask must not be empty")
 }

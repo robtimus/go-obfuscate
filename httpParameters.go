@@ -124,11 +124,3 @@ func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.B
 	}
 	return nil
 }
-
-var defaultPrintf = func(format string, v ...any) {
-	fmt.Printf(format, v...)
-}
-
-var defaultPanicf = func(format string, v ...any) {
-	log.Panicf(format, v...)
-}
