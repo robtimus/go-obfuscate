@@ -1844,10 +1844,10 @@ func TestJSONObfuscatorWithDefaultInheritOverridableForArrays(t *testing.T) {
 	testJSONObfuscation(t, jsonObfuscator, expected)
 }
 
-func testJSONObfuscation(t *testing.T, obfuscator JSONObfuscator, expectedOutput string) {
+func testJSONObfuscation(t *testing.T, obfuscator ParsingObfuscator, expectedOutput string) {
 	t.Helper()
 
-	obfuscated, err := obfuscator.ObfuscateJSONString(inputJson)
+	obfuscated, err := obfuscator.ParseAndObfuscateString(inputJson)
 	if err != nil {
 		t.Errorf("unexpected error: '%v'", err)
 	}

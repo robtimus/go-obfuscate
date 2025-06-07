@@ -17,6 +17,17 @@ type Obfuscator interface {
 	UntilLength(prefixLength int) ObfuscatorPrefix
 }
 
+// ParsingObfuscator represents an obfuscator that needs to parse strings as part of the obfuscation.
+//
+// Implementations should usually delegate [Obfuscator.ObfuscateString] to [ParsingObfuscator.ParseAndObfuscateString].
+// If the latter returns an error, this should be handled according to one of the possible [ErrorStrategy] constants.
+type ParsingObfuscator interface {
+	Obfuscator
+
+	// ParseAndObfuscateString parses the given string and obfuscates the parsed result.
+	ParseAndObfuscateString(s string) (string, error)
+}
+
 type obfuscator struct {
 	obfuscate       func(s string) string
 	minPrefixLength int

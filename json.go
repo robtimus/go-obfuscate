@@ -17,10 +17,8 @@ type JSONObfuscator struct {
 	printf     func(format string, v ...any)
 }
 
-// ObfuscateJSONString obfuscates the given string.
-//
-// It is like [JSONObfuscator.ObfuscateString], but it returns any error instead of handling it internally.
-func (o JSONObfuscator) ObfuscateJSONString(s string) (string, error) {
+// ParseAndObfuscateString implements the [ParsingObfuscator] interface.
+func (o JSONObfuscator) ParseAndObfuscateString(s string) (string, error) {
 	var parsed any
 	err := json.Unmarshal([]byte(s), &parsed)
 	if err != nil {
@@ -35,10 +33,10 @@ func (o JSONObfuscator) ObfuscateJSONString(s string) (string, error) {
 
 // ObfuscateString implements the [Obfuscator] interface.
 //
-// It is like [JSONObfuscator.ObfuscateJSONString], but it handles any error internally according to the [ErrorStrategy]
+// It is like [JSONObfuscator.ParseAndObfuscateString], but it handles any error internally according to the [ErrorStrategy]
 // provided when the JSONObfuscator instance was created.
 func (o JSONObfuscator) ObfuscateString(s string) string {
-	obfuscated, err := o.ObfuscateJSONString(s)
+	obfuscated, err := o.ParseAndObfuscateString(s)
 	if err != nil {
 		switch o.onError {
 		case OnErrorLog:
