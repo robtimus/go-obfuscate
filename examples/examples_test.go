@@ -169,8 +169,10 @@ func TestJSONExample(t *testing.T) {
 
 func TestJSONWithOptionsPerPropertyExample(t *testing.T) {
 	jsonObfuscator := obfuscate.JSON().
-		WithProperty("password", obfuscate.WithFixedLength(3),
-			&obfuscate.JSONPropertyObfuscationOptions{ForObjects: obfuscate.Inherit, ForArrays: obfuscate.Inherit}).
+		WithProperty("password", obfuscate.WithFixedLength(3), &obfuscate.JSONPropertyObfuscationOptions{
+			ForObjects: obfuscate.Inherit,
+			ForArrays:  obfuscate.Inherit,
+		}).
 		Build()
 	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
 	if err != nil {

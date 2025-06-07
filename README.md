@@ -249,8 +249,10 @@ If a matched property is not a string or other scalar value but instead an objec
 1. Per property. Instead of providing `nil` for the third argument, pass property-specific options:
     ```go
     jsonObfuscator := obfuscate.JSON().
-        WithProperty("password", obfuscate.WithFixedLength(3),
-            &obfuscate.JSONPropertyObfuscationOptions{ForObjects: obfuscate.Inherit, ForArrays: obfuscate.Inherit}).
+        WithProperty("password", obfuscate.WithFixedLength(3), &obfuscate.JSONPropertyObfuscationOptions{
+            ForObjects: obfuscate.Inherit,
+            ForArrays:  obfuscate.Inherit,
+        }).
         Build()
     ```
 2. Setting global settings on the builder:
