@@ -1,8 +1,6 @@
 package obfuscate
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // ErrorStrategy represents the strategy to follow when an error occurs while obfuscating a string.
 type ErrorStrategy int
