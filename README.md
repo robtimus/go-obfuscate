@@ -288,7 +288,7 @@ obfuscatedJsonString := jsonObfuscator.ObfuscateString(`{"username": admin, "pas
 
 ## Obfuscating maps
 
-Use `Obfuscate.Maps` to create an object that can obfuscate string values in maps. The key type can be anything that is comparable, but usually `string` is used.
+Use `obfuscate.Maps` to create an object that can obfuscate string values in maps. The key type can be anything that is comparable, but usually `string` is used.
 
 ```go
 mapObfuscator := obfuscate.Maps(map[string]obfuscate.Obfuscator{
@@ -299,4 +299,14 @@ obfuscatedMap := mapObfuscator.ObfuscateMap(map[string]string{
     "password": "admin1234",
 })
 // obfuscatedMap is map["username":"admin", "password":"***"]
+```
+
+## Obfuscating slices
+
+Use `obfuscate.Slice` to obfuscate all elements of a slice.
+
+```go
+input := []int{1, 2, 3}
+obfuscated := obfuscate.Slice(input, obfuscate.WithFixedLength(3))
+// obfuscated is ["***", "***", "***"]
 ```

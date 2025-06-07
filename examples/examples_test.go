@@ -223,6 +223,14 @@ func TestMapsExample(t *testing.T) {
 	}, obfuscatedMap)
 }
 
+func TestSliceExample(t *testing.T) {
+	input := []int{1, 2, 3}
+	obfuscated := obfuscate.Slice(input, obfuscate.WithFixedLength(3))
+
+	expected := []string{"***", "***", "***"}
+	assertEqualSlices(t, expected, obfuscated)
+}
+
 func assertEqual[T comparable](t *testing.T, expected, actual T) {
 	t.Helper()
 
