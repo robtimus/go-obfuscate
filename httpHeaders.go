@@ -1,6 +1,9 @@
 package obfuscate
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 // HTTPHeaderObfuscator represents an object that can obfuscate HTTP header values.
 type HTTPHeaderObfuscator struct {
@@ -27,13 +30,13 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderValue(headerName, headerValue strin
 // ObfuscateHeaderValues obfuscates multiple values for a single header.
 func (o HTTPHeaderObfuscator) ObfuscateHeaderValues(headerName string, headerValues []string) []string {
 	if obfuscator, ok := o.obfuscators[strings.ToLower(headerName)]; ok {
-		var result []string
-		for _, headerValue := range headerValues {
-			result = append(result, obfuscator.ObfuscateString(headerValue))
+		result := make([]string, len(headerValues))
+		for index, headerValue := range headerValues {
+			result[index] = obfuscator.ObfuscateString(headerValue)
 		}
 		return result
 	}
-	return append([]string{}, headerValues...)
+	return slices.Clone(headerValues)
 }
 
 // ObfuscateHeaderMap obfuscates all values in a map where the keys are HTTP header names and the values are the matching HTTP header values.

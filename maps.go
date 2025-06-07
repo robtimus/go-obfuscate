@@ -33,9 +33,9 @@ func (o MapObfuscator[K]) ObfuscateMultiMap(m map[K][]string) map[K][]string {
 	result := map[K][]string{}
 	for key, values := range m {
 		if obfuscator, ok := o.obfuscators[key]; ok {
-			var obfuscatedValues []string
-			for _, value := range values {
-				obfuscatedValues = append(obfuscatedValues, obfuscator.ObfuscateString(value))
+			obfuscatedValues := make([]string, len(values))
+			for index, value := range values {
+				obfuscatedValues[index] = obfuscator.ObfuscateString(value)
 			}
 			result[key] = obfuscatedValues
 		} else {

@@ -64,9 +64,9 @@ func (o JSONObfuscator) obfuscateScalar(value any, obfuscator Obfuscator) any {
 
 func (o JSONObfuscator) obfuscateScalars(object any, obfuscator Obfuscator) any {
 	if s, ok := object.([]any); ok {
-		var result []any
-		for _, value := range s {
-			result = append(result, o.obfuscateScalars(value, obfuscator))
+		result := make([]any, len(s))
+		for index, value := range s {
+			result[index] = o.obfuscateScalars(value, obfuscator)
 		}
 		return result
 	}
@@ -82,9 +82,9 @@ func (o JSONObfuscator) obfuscateScalars(object any, obfuscator Obfuscator) any 
 
 func (o JSONObfuscator) obfuscateWithDefault(object any, defaultObfuscator Obfuscator) any {
 	if s, ok := object.([]any); ok {
-		var result []any
-		for _, value := range s {
-			result = append(result, o.obfuscateWithDefault(value, defaultObfuscator))
+		result := make([]any, len(s))
+		for index, value := range s {
+			result[index] = o.obfuscateWithDefault(value, defaultObfuscator)
 		}
 		return result
 	}
