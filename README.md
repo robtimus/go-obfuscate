@@ -217,12 +217,11 @@ obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username
 // obfuscatedParamString is "username=admin&password=***"
 ```
 
-The result of `obfuscate.HTTPParameters` also implements `obfuscate.Obfuscator`. This works almost the same as calling `ObfuscateParameterString`. Because parsing parameter strings can fail with an error, `obfuscate.HTTPParameters` can be called with optional options that specify how to handle errors:
+The result of `obfuscate.HTTPParameters` also implements `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing parameter strings can fail with an error, the builder returned by `obfuscate.HTTPParameters` can be configured to specify how to handle errors:
 
-* `obfuscate.OnErrorLog` (default) will cause the error to be logged. If a `log.Logger` is given its `Printf` method will be used, otherwise `fmt.Printf` will be used.
-* `obfuscate.OnErrorInclude` will cause the error to be included in the return value.
-* `OnErrorStop` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
-* `OnErrorPanic` will cause a panic. If a `log.Logger` is given its `Panicf` method will be used, otherwise `log.Panicf` will be used.
+* `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` `log.Logger` is given its `Printf` method will be used, otherwise `fmt.Printf` will be used.
+* `OnErrorInclude()` will cause the error to be included in the return value.
+* `OnErrorStop()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
 
 ```go
 paramsObfuscator := obfuscate.HTTPParameters().
