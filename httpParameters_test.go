@@ -1,7 +1,6 @@
 package obfuscate
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"testing"
@@ -15,14 +14,6 @@ func TestHTTPParameterDefaultErrorStrategy(t *testing.T) {
 	expected := OnErrorLog
 
 	assertEqual(t, expected, actual)
-}
-
-func TestHTTPParameterDefaultLogging(t *testing.T) {
-	obfuscator := newHTTPParameterObfuscator(nil)
-
-	testPanic(t, "log.Panicf", func() {
-		obfuscator.panicf("panic: %v", obfuscator)
-	}, fmt.Sprintf("panic: %v", obfuscator))
 }
 
 func TestObfuscateParameterString(t *testing.T) {
@@ -49,7 +40,7 @@ func TestObfuscateParameterStringWithError(t *testing.T) {
 	output := &strings.Builder{}
 	logger := log.New(output, "", 0)
 
-	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorPanic, Logger: logger})
+	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorLog, Logger: logger})
 
 	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
@@ -92,26 +83,6 @@ func TestObfuscateParameterStringOnErrorStop(t *testing.T) {
 	testObfuscateParameterStringWithErrors(t, OnErrorStop,
 		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",
 		"")
-}
-
-func TestObfuscateParameterStringOnErrorPanic(t *testing.T) {
-	logger := newCapturingLogger()
-
-	var obfuscator Obfuscator = newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorPanic, Logger: logger.Logger})
-
-	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
-
-	testPanic(t, "TestObfuscateParameterStringOnErrorPanic", func() {
-		obfuscator.ObfuscateString(input)
-	}, "ObfuscateString error: invalid URL escape \"%A\"")
-
-	actualLogged := logger.String()
-
-	expectedLogged := "ObfuscateString error: invalid URL escape \"%A\"\n"
-
-	if actualLogged != expectedLogged {
-		t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
-	}
 }
 
 func testObfuscateParameterStringWithErrors(t *testing.T, onError ErrorStrategy, expectedOutput, expectedLogged string) {

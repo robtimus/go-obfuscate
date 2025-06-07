@@ -2,7 +2,6 @@ package obfuscate
 
 import (
 	"fmt"
-	"log"
 )
 
 // ErrorStrategy represents the strategy to follow when an error occurs while obfuscating a string.
@@ -17,8 +16,6 @@ func (es ErrorStrategy) String() string {
 		return "OnErrorInclude"
 	case OnErrorStop:
 		return "OnErrorStop"
-	case OnErrorPanic:
-		return "OnErrorPanic"
 	}
 	return fmt.Sprintf("ErrorStrategy(%d)", int(es))
 }
@@ -30,14 +27,8 @@ const (
 	OnErrorInclude
 	// OnErrorStop will cause obfuscation to stop when an error occurs. The error will not be visible in any way.
 	OnErrorStop
-	// OnErrorPanic will trigger a panic when an error occurs.
-	OnErrorPanic
 )
 
 var defaultPrintf = func(format string, v ...any) {
 	fmt.Printf(format, v...)
-}
-
-var defaultPanicf = func(format string, v ...any) {
-	log.Panicf(format, v...)
 }

@@ -102,14 +102,6 @@ func TestJSONDefaultErrorStrategy(t *testing.T) {
 	assertEqual(t, expected, actual)
 }
 
-func TestJSONDefaultLogging(t *testing.T) {
-	obfuscator := JSON().Build()
-
-	testPanic(t, "log.Panicf", func() {
-		obfuscator.panicf("panic: %v", obfuscator)
-	}, fmt.Sprintf("panic: %v", obfuscator))
-}
-
 func TestJSONObfuscatorWithDefaultSettings(t *testing.T) {
 	obfuscator := WithFixedLength(3)
 	jsonObfuscator := JSON().
@@ -1893,39 +1885,6 @@ func TestObfuscateJSONStringOnErrorStop(t *testing.T) {
 	input := inputJson + "x"
 
 	testObfuscateJSONStringWithErrors(t, builder, nil, input, "", "")
-}
-
-func TestObfuscateJSONStringOnErrorPanic(t *testing.T) {
-	logger := newCapturingLogger()
-	builder := JSON().OnErrorPanic(logger.Logger)
-
-	input := inputJson + "x"
-
-	var v any
-	err := json.Unmarshal([]byte(input), &v)
-	expectedLogged := fmt.Sprintf("ObfuscateString error: %v\n", err)
-
-	obfuscator := WithFixedLength(3)
-	var jsonObfuscator Obfuscator = builder.
-		WithProperty("string", obfuscator, nil).
-		WithProperty("int", obfuscator, nil).
-		WithProperty("float", obfuscator, nil).
-		WithProperty("booleanTrue", obfuscator, nil).
-		WithProperty("booleanFalse", obfuscator, nil).
-		WithProperty("object", WithFixedLengthWithMask(3, "o"), nil).
-		WithProperty("array", WithFixedLengthWithMask(3, "a"), nil).
-		WithProperty("null", obfuscator, nil).
-		Build()
-
-	testPanic(t, "TestObfuscateJSONStringOnErrorPanic", func() {
-		jsonObfuscator.ObfuscateString(input)
-	}, fmt.Sprintf("ObfuscateString error: %v", err))
-
-	actualLogged := logger.String()
-
-	if actualLogged != expectedLogged {
-		t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
-	}
 }
 
 func testObfuscateJSONStringWithErrors(t *testing.T, builder *JSONObfuscatorBuilder, logger *CapturingLogger, input, expectedOutput, expectedLogged string) {

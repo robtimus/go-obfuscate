@@ -26,10 +26,6 @@ func TestErrorStrategyOnErrorStop(t *testing.T) {
 	testErrorStrategy(t, OnErrorStop, 2, "OnErrorStop")
 }
 
-func TestErrorStrategyOnErrorPanic(t *testing.T) {
-	testErrorStrategy(t, OnErrorPanic, 3, "OnErrorPanic")
-}
-
 func TestErrorStrategyUnknown(t *testing.T) {
 	testErrorStrategy(t, ErrorStrategy(255), 255, "ErrorStrategy(255)")
 }

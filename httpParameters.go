@@ -13,14 +13,13 @@ type HTTPParameterObfuscator struct {
 	obfuscators map[string]Obfuscator
 	onError     ErrorStrategy
 	printf      func(format string, v ...any)
-	panicf      func(format string, v ...any)
 }
 
 // HTTPParameterObfuscatorOptions represents the configurable options used by HTTPParameterObfuscator instances.
 type HTTPParameterObfuscatorOptions struct {
 	// OnError represents the strategy to follow when an error occurs while obfuscating a string.
 	OnError ErrorStrategy
-	// Logger represents the optional logger to use in case OnError is OnErrorLog or OnErrorPanic.
+	// Logger represents the optional logger to use in case OnError is OnErrorLog.
 	Logger *log.Logger
 }
 
@@ -33,16 +32,14 @@ func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObf
 
 	var onError ErrorStrategy
 	printf := defaultPrintf
-	panicf := defaultPanicf
 	if options != nil {
 		onError = options.OnError
 		if options.Logger != nil {
 			printf = options.Logger.Printf
-			panicf = options.Logger.Panicf
 		}
 	}
 
-	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf, panicf: panicf}
+	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf}
 }
 
 // ObfuscateParameter obfuscates the given value for a parameter with the given name.
@@ -79,8 +76,6 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 			builder.WriteString(fmt.Sprintf("<error: %v>", err))
 		case OnErrorStop:
 			break
-		case OnErrorPanic:
-			o.panicf("ObfuscateString error: %v", err)
 		}
 	}
 	return builder.String()

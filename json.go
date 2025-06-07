@@ -15,7 +15,6 @@ type JSONObfuscator struct {
 	forArrays  ObfuscationMode
 	onError    ErrorStrategy
 	printf     func(format string, v ...any)
-	panicf     func(format string, v ...any)
 }
 
 // ObfuscateJSONString obfuscates the given string.
@@ -48,8 +47,6 @@ func (o JSONObfuscator) ObfuscateString(s string) string {
 			obfuscated = fmt.Sprintf("%s<error: %v>", obfuscated, err)
 		case OnErrorStop:
 			break
-		case OnErrorPanic:
-			o.panicf("ObfuscateString error: %v", err)
 		}
 	}
 	return obfuscated
@@ -208,21 +205,11 @@ func (b *JSONObfuscatorBuilder) OnErrorStop() *JSONObfuscatorBuilder {
 	return b
 }
 
-// OnErrorPanic sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorPanic].
-// An optional logger can be given to use instead of the default [log.Panicf].
-func (b *JSONObfuscatorBuilder) OnErrorPanic(logger *log.Logger) *JSONObfuscatorBuilder {
-	b.onError = OnErrorPanic
-	b.logger = logger
-	return b
-}
-
 // Build creates a new JSON obfuscator using the contents of the builder.
 func (b *JSONObfuscatorBuilder) Build() JSONObfuscator {
 	printf := defaultPrintf
-	panicf := defaultPanicf
 	if b.logger != nil {
 		printf = b.logger.Printf
-		panicf = b.logger.Panicf
 	}
 
 	return JSONObfuscator{
@@ -231,7 +218,6 @@ func (b *JSONObfuscatorBuilder) Build() JSONObfuscator {
 		forArrays:  b.forArrays,
 		onError:    b.onError,
 		printf:     printf,
-		panicf:     panicf,
 	}
 }
 
