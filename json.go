@@ -10,7 +10,6 @@ import (
 // JSONObfuscator represents an object that can obfuscate JSON strings.
 type JSONObfuscator struct {
 	properties map[string]jsonPropertyConfig
-
 	forObjects ObfuscationMode
 	forArrays  ObfuscationMode
 	onError    ErrorStrategy
@@ -143,7 +142,6 @@ func (o JSONObfuscator) obfuscateValue(value any, obfuscator, defaultObfuscator 
 // JSONObfuscatorBuilder is a builder for [JSONObfuscator] instances.
 type JSONObfuscatorBuilder struct {
 	properties map[string]jsonPropertyConfig
-
 	forObjects ObfuscationMode
 	forArrays  ObfuscationMode
 	onError    ErrorStrategy

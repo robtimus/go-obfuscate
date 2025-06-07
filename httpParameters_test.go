@@ -7,7 +7,7 @@ import (
 )
 
 func TestHTTPParameterDefaultErrorStrategy(t *testing.T) {
-	obfuscator := newHTTPParameterObfuscator(nil)
+	obfuscator := newHTTPParameterObfuscatorBuilder().Build()
 
 	actual := obfuscator.onError
 
@@ -17,7 +17,7 @@ func TestHTTPParameterDefaultErrorStrategy(t *testing.T) {
 }
 
 func TestObfuscateParameterString(t *testing.T) {
-	obfuscator := newHTTPParameterObfuscator(nil)
+	var obfuscator ParsingObfuscator = newHTTPParameterObfuscatorBuilder().Build()
 
 	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value"
 
@@ -27,7 +27,7 @@ func TestObfuscateParameterString(t *testing.T) {
 
 	assertEqual(t, expected, actual)
 
-	actual, err := obfuscator.ObfuscateParameterString(input)
+	actual, err := obfuscator.ParseAndObfuscateString(input)
 
 	assertEqual(t, expected, actual)
 
@@ -40,11 +40,11 @@ func TestObfuscateParameterStringWithError(t *testing.T) {
 	output := &strings.Builder{}
 	logger := log.New(output, "", 0)
 
-	obfuscator := newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: OnErrorLog, Logger: logger})
+	obfuscator := newHTTPParameterObfuscatorBuilder().OnErrorLog(logger).Build()
 
 	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
-	actualOutput, actualErr := obfuscator.ObfuscateParameterString(input)
+	actualOutput, actualErr := obfuscator.ParseAndObfuscateString(input)
 
 	expectedOutput := "foo=***&hello=world&FOO=BAR&empty=&no-value&err="
 
@@ -68,29 +68,34 @@ func TestObfuscateParameterStringWithError(t *testing.T) {
 }
 
 func TestObfuscateParameterStringOnErrorLog(t *testing.T) {
-	testObfuscateParameterStringWithErrors(t, OnErrorLog,
+	logger := newCapturingLogger()
+	builder := newHTTPParameterObfuscatorBuilder().OnErrorLog(logger.Logger)
+
+	testObfuscateParameterStringWithErrors(t, builder, logger,
 		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",
 		"ObfuscateString error: invalid URL escape \"%A\"\n")
 }
 
 func TestObfuscateParameterStringOnErrorInclude(t *testing.T) {
-	testObfuscateParameterStringWithErrors(t, OnErrorInclude,
+	builder := newHTTPParameterObfuscatorBuilder().OnErrorInclude()
+
+	testObfuscateParameterStringWithErrors(t, builder, nil,
 		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=<error: invalid URL escape \"%A\">",
 		"")
 }
 
 func TestObfuscateParameterStringOnErrorStop(t *testing.T) {
-	testObfuscateParameterStringWithErrors(t, OnErrorStop,
+	builder := newHTTPParameterObfuscatorBuilder().OnErrorStop()
+
+	testObfuscateParameterStringWithErrors(t, builder, nil,
 		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",
 		"")
 }
 
-func testObfuscateParameterStringWithErrors(t *testing.T, onError ErrorStrategy, expectedOutput, expectedLogged string) {
+func testObfuscateParameterStringWithErrors(t *testing.T, builder *HTTPParameterObfuscatorBuilder, logger *CapturingLogger, expectedOutput, expectedLogged string) {
 	t.Helper()
 
-	logger := newCapturingLogger()
-
-	var obfuscator Obfuscator = newHTTPParameterObfuscator(&HTTPParameterObfuscatorOptions{OnError: onError, Logger: logger.Logger})
+	var obfuscator Obfuscator = builder.Build()
 
 	input := "foo=bar&hello=world&FOO=BAR&empty=&no-value&err=%A&err=%B"
 
@@ -100,18 +105,18 @@ func testObfuscateParameterStringWithErrors(t *testing.T, onError ErrorStrategy,
 		t.Errorf("expected: '%v', actual: '%v'", expectedOutput, actualOutput)
 	}
 
-	actualLogged := logger.String()
+	if logger != nil {
+		actualLogged := logger.String()
 
-	if actualLogged != expectedLogged {
-		t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
+		if actualLogged != expectedLogged {
+			t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
+		}
 	}
 }
 
-func newHTTPParameterObfuscator(options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
-	obfuscators := map[string]Obfuscator{
-		"foo":      All(),
-		"no-value": All(),
-		"err":      All(),
-	}
-	return HTTPParameters(obfuscators, options)
+func newHTTPParameterObfuscatorBuilder() *HTTPParameterObfuscatorBuilder {
+	return HTTPParameters().
+		WithParameter("foo", All()).
+		WithParameter("no-value", All()).
+		WithParameter("err", All())
 }

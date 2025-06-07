@@ -130,14 +130,14 @@ func TestHTTPHeadersExample(t *testing.T) {
 }
 
 func TestHTTPParamsExample(t *testing.T) {
-	paramsObfuscator := obfuscate.HTTPParameters(map[string]obfuscate.Obfuscator{
-		"password": obfuscate.WithFixedLength(3),
-	}, nil)
+	paramsObfuscator := obfuscate.HTTPParameters().
+		WithParameter("password", obfuscate.WithFixedLength(3)).
+		Build()
 	obfuscatedPassword := paramsObfuscator.ObfuscateParameter("password", "admin1234")
 	assertEqual(t, "***", obfuscatedPassword)
 	obfuscatedUsername := paramsObfuscator.ObfuscateParameter("username", "admin")
 	assertEqual(t, "admin", obfuscatedUsername)
-	obfuscatedParamString, err := paramsObfuscator.ObfuscateParameterString("username=admin&password=admin1234")
+	obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username=admin&password=admin1234")
 	if err != nil {
 		t.Errorf("unexpected error: '%v'", err)
 	}
@@ -145,9 +145,10 @@ func TestHTTPParamsExample(t *testing.T) {
 }
 
 func TestHTTPParamsWithHandlerExample(t *testing.T) {
-	paramsObfuscator := obfuscate.HTTPParameters(map[string]obfuscate.Obfuscator{
-		"password": obfuscate.WithFixedLength(3),
-	}, &obfuscate.HTTPParameterObfuscatorOptions{OnError: obfuscate.OnErrorInclude})
+	paramsObfuscator := obfuscate.HTTPParameters().
+		WithParameter("password", obfuscate.WithFixedLength(3)).
+		OnErrorInclude().
+		Build()
 	obfuscatedParamString := paramsObfuscator.ObfuscateString("username=admin&password=admin1234%A")
 	assertEqual(t, "username=admin&password=<error: invalid URL escape \"%A\">", obfuscatedParamString)
 }

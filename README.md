@@ -206,14 +206,14 @@ obfuscatedHeaders := headerObfuscator.ObfuscateHeaderMap(map[string]string{
 Use `obfuscate.HTTPParameters` to create an object that can obfuscate HTTP query and form parameter strings, as well as separate parameter values.
 
 ```go
-paramsObfuscator := obfuscate.HTTPParameters(map[string]obfuscate.Obfuscator{
-    "password": obfuscate.WithFixedLength(3),
-}, nil)
+paramsObfuscator := obfuscate.HTTPParameters().
+    WithParameter("password", obfuscate.WithFixedLength(3)).
+    Build()
 obfuscatedPassword := paramsObfuscator.ObfuscateParameter("password", "admin1234")
 // obfuscatedPassword is "***"
 obfuscatedUsername := paramsObfuscator.ObfuscateParameter("username", "admin")
 // obfuscatedUsername is "admin"
-obfuscatedParamString, err := paramsObfuscator.ObfuscateParameterString("username=admin&password=admin1234")
+obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username=admin&password=admin1234")
 // obfuscatedParamString is "username=admin&password=***"
 ```
 
@@ -225,9 +225,10 @@ The result of `obfuscate.HTTPParameters` also implements `obfuscate.Obfuscator`.
 * `OnErrorPanic` will cause a panic. If a `log.Logger` is given its `Panicf` method will be used, otherwise `log.Panicf` will be used.
 
 ```go
-paramsObfuscator := obfuscate.HTTPParameters(map[string]obfuscate.Obfuscator{
-    "password": obfuscate.WithFixedLength(3),
-}, &obfuscate.HTTPParameterObfuscatorOptions{OnError: obfuscate.OnErrorInclude})
+paramsObfuscator := obfuscate.HTTPParameters().
+    WithParameter("password", obfuscate.WithFixedLength(3)).
+    OnErrorInclude().
+    Build()
 obfuscatedParamString := paramsObfuscator.ObfuscateString("username=admin&password=admin1234%A")
 // obfuscatedParamString is something like "username=admin&password=<error: invalid URL escape \"%A\">"
 ```

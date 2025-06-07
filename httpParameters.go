@@ -3,6 +3,7 @@ package obfuscate
 import (
 	"fmt"
 	"log"
+	"maps"
 	"net/url"
 	"strings"
 )
@@ -10,41 +11,14 @@ import (
 // HTTPParameterObfuscator represents an object that can obfuscate HTTP query and form parameter strings,
 // as well as separate parameter values.
 type HTTPParameterObfuscator struct {
-	obfuscators map[string]Obfuscator
-	onError     ErrorStrategy
-	printf      func(format string, v ...any)
-}
-
-// HTTPParameterObfuscatorOptions represents the configurable options used by HTTPParameterObfuscator instances.
-type HTTPParameterObfuscatorOptions struct {
-	// OnError represents the strategy to follow when an error occurs while obfuscating a string.
-	OnError ErrorStrategy
-	// Logger represents the optional logger to use in case OnError is OnErrorLog.
-	Logger *log.Logger
-}
-
-// HTTPParameters creates a new HTTP parameter obfuscator.
-func HTTPParameters(obfuscators map[string]Obfuscator, options *HTTPParameterObfuscatorOptions) HTTPParameterObfuscator {
-	obfuscatorMap := map[string]Obfuscator{}
-	for propertyName, obfuscator := range obfuscators {
-		obfuscatorMap[propertyName] = obfuscator
-	}
-
-	var onError ErrorStrategy
-	printf := defaultPrintf
-	if options != nil {
-		onError = options.OnError
-		if options.Logger != nil {
-			printf = options.Logger.Printf
-		}
-	}
-
-	return HTTPParameterObfuscator{obfuscators: obfuscatorMap, onError: onError, printf: printf}
+	parameters map[string]Obfuscator
+	onError    ErrorStrategy
+	printf     func(format string, v ...any)
 }
 
 // ObfuscateParameter obfuscates the given value for a parameter with the given name.
 func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
-	if obfuscator, ok := o.obfuscators[name]; ok {
+	if obfuscator, ok := o.parameters[name]; ok {
 		return obfuscator.ObfuscateString(value)
 	}
 	return value
@@ -52,10 +26,8 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 
 // strings.Builder's WriteString method is documented to return a nil error, so no need to check for it in methods below
 
-// ObfuscateParameterString obfuscates the given string.
-//
-// It is like [HTTPParameterObfuscator.ObfuscateString], but it returns any error instead of handling it internally.
-func (o HTTPParameterObfuscator) ObfuscateParameterString(s string) (string, error) {
+// ParseAndObfuscateString implements the [ParsingObfuscator] interface.
+func (o HTTPParameterObfuscator) ParseAndObfuscateString(s string) (string, error) {
 	builder := strings.Builder{}
 	err := o.obfuscateParameterString(s, &builder)
 	return builder.String(), err
@@ -63,7 +35,7 @@ func (o HTTPParameterObfuscator) ObfuscateParameterString(s string) (string, err
 
 // ObfuscateString implements the [Obfuscator] interface.
 //
-// It is like [HTTPParameterObfuscator.ObfuscateParameterString], but it handles any error internally according to the [ErrorStrategy]
+// It is like [HTTPParameterObfuscator.ParseAndObfuscateString], but it handles any error internally according to the [ErrorStrategy]
 // provided when the HTTPParameterObfuscator instance was created.
 func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	builder := strings.Builder{}
@@ -118,4 +90,58 @@ func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.B
 		builder.WriteString(o.ObfuscateParameter(name, value))
 	}
 	return nil
+}
+
+// HTTPParameterObfuscatorBuilder is a builder for [HTTPParameterObfuscator] instances.
+type HTTPParameterObfuscatorBuilder struct {
+	parameters map[string]Obfuscator
+	onError    ErrorStrategy
+	logger     *log.Logger
+}
+
+// HTTPParameters creates a new builder for HTTP parameter obfuscators.
+func HTTPParameters() *HTTPParameterObfuscatorBuilder {
+	return &HTTPParameterObfuscatorBuilder{parameters: map[string]Obfuscator{}}
+}
+
+// WithParameter registers a parameter to obfuscate. It uses the given obfuscator for obfuscating any occurrence of a parameter with the given name.
+func (b *HTTPParameterObfuscatorBuilder) WithParameter(parameterName string, obfuscator Obfuscator) *HTTPParameterObfuscatorBuilder {
+	b.parameters[parameterName] = obfuscator
+	return b
+}
+
+// OnErrorLog sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorLog].
+// An optional logger can be given to use instead of the default [fmt.Printf].
+func (b *HTTPParameterObfuscatorBuilder) OnErrorLog(logger *log.Logger) *HTTPParameterObfuscatorBuilder {
+	b.onError = OnErrorLog
+	b.logger = logger
+	return b
+}
+
+// OnErrorInclude sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorInclude].
+func (b *HTTPParameterObfuscatorBuilder) OnErrorInclude() *HTTPParameterObfuscatorBuilder {
+	b.onError = OnErrorInclude
+	b.logger = nil
+	return b
+}
+
+// OnErrorStop sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorStop].
+func (b *HTTPParameterObfuscatorBuilder) OnErrorStop() *HTTPParameterObfuscatorBuilder {
+	b.onError = OnErrorStop
+	b.logger = nil
+	return b
+}
+
+// Build creates a new HTTP parameter obfuscator using the contents of the builder.
+func (b *HTTPParameterObfuscatorBuilder) Build() HTTPParameterObfuscator {
+	printf := defaultPrintf
+	if b.logger != nil {
+		printf = b.logger.Printf
+	}
+
+	return HTTPParameterObfuscator{
+		parameters: maps.Clone(b.parameters),
+		onError:    b.onError,
+		printf:     printf,
+	}
 }
