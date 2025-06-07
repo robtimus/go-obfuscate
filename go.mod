@@ -1,3 +1,3 @@
 module github.com/robtimus/go-obfuscate
 
-go 1.22.0
+go 1.22

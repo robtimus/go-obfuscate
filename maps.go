@@ -1,5 +1,10 @@
 package obfuscate
 
+import (
+	"maps"
+	"slices"
+)
+
 // MapObfuscator represents an object that can obfuscate map values.
 type MapObfuscator[K comparable] struct {
 	obfuscators map[K]Obfuscator
@@ -7,11 +12,7 @@ type MapObfuscator[K comparable] struct {
 
 // Maps creates a new map obfuscator.
 func Maps[K comparable](obfuscators map[K]Obfuscator) MapObfuscator[K] {
-	obfuscatorMap := map[K]Obfuscator{}
-	for key, obfuscator := range obfuscators {
-		obfuscatorMap[key] = obfuscator
-	}
-	return MapObfuscator[K]{obfuscators: obfuscatorMap}
+	return MapObfuscator[K]{obfuscators: maps.Clone(obfuscators)}
 }
 
 // ObfuscateMap obfuscates all values in a map.
@@ -38,7 +39,7 @@ func (o MapObfuscator[K]) ObfuscateMultiMap(m map[K][]string) map[K][]string {
 			}
 			result[key] = obfuscatedValues
 		} else {
-			result[key] = append([]string{}, values...)
+			result[key] = slices.Clone(values)
 		}
 	}
 	return result
