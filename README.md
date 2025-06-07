@@ -217,9 +217,9 @@ obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username
 // obfuscatedParamString is "username=admin&password=***"
 ```
 
-The result of `obfuscate.HTTPParameters` also implements `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing parameter strings can fail with an error, the builder returned by `obfuscate.HTTPParameters` can be configured to specify how to handle errors:
+Objects created by calling `Build()` on the result of `obfuscate.HTTPParameters` also implement `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing parameter strings can fail with an error, the builder returned by `obfuscate.HTTPParameters` can be configured to specify how to handle errors:
 
-* `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` `log.Logger` is given its `Printf` method will be used, otherwise `fmt.Printf` will be used.
+* `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
 * `OnErrorInclude()` will cause the error to be included in the return value.
 * `OnErrorStop()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
 
@@ -230,6 +230,58 @@ paramsObfuscator := obfuscate.HTTPParameters().
     Build()
 obfuscatedParamString := paramsObfuscator.ObfuscateString("username=admin&password=admin1234%A")
 // obfuscatedParamString is something like "username=admin&password=<error: invalid URL escape \"%A\">"
+```
+
+## Obfuscating JSON
+
+Use `obfuscate.JSON` to create an object that can obfuscate JSON strings.
+
+```go
+jsonObfuscator := obfuscate.JSON().
+    WithProperty("password", obfuscate.WithFixedLength(3), nil).
+    Build()
+obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
+// obfuscatedJsonString is equivalent to `{"username": "admin", "password": "***"}`
+```
+
+If a matched property is not a string or other scalar value but instead an object or array, it will by default be ignored. This behaviour can be changed in two ways:
+
+1. Per property. Instead of providing `nil` for the third argument, pass property-specific options:
+    ```go
+    jsonObfuscator := obfuscate.JSON().
+        WithProperty("password", obfuscate.WithFixedLength(3),
+            &obfuscate.JSONPropertyObfuscationOptions{ForObjects: obfuscate.Inherit, ForArrays: obfuscate.Inherit}).
+        Build()
+    ```
+2. Setting global settings on the builder:
+    ```go
+    jsonObfuscator := obfuscate.JSON().
+        WithProperty("password", obfuscate.WithFixedLength(3), nil).
+        ForObjects(obfuscate.Inherit).
+        ForArrays(obfuscate.Inherit).
+        Build()
+    ```
+
+In both cases, `ForObjects` and `ForArrays` can take the following values:
+* `obfuscate.Exclude` to not match properties with object or array values; nested properties will be matched separately.
+* `obfuscate.ExcludeAll` to not match properties with object or array values; obfuscation will exclude all nested properties as well.
+* `obfuscate.Inherit` to obfuscate each nested scalar property value or array element using the given obfuscator.
+* `obfuscate.InheritOverridable` to obfuscate each nested scalar property value or array element using the given obfuscator; however, if a nested property has its own obfuscator defined this will be used instead.
+
+Objects created by calling `Build()` on the result of `obfuscate.JSON` also implement `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing JSON strings can fail with an error, the builder returned by `obfuscate.JSON` can be configured to specify how to handle errors:
+
+* `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
+* `OnErrorInclude()` will cause the error to be included in the return value.
+* `OnErrorStop()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
+
+```go
+jsonObfuscator := obfuscate.JSON().
+    WithProperty("password", obfuscate.WithFixedLength(3), nil).
+    OnErrorInclude().
+    Build()
+obfuscatedJsonString := jsonObfuscator.ObfuscateString(`{"username": admin, "password": "admin1234"}`)
+// obfuscatedJsonString ends with "<error: invalid character 'a' looking for beginning of value>"
+// It may or may not include any part of the JSON before the parse error
 ```
 
 ## Obfuscating maps

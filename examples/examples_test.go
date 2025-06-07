@@ -153,6 +153,60 @@ func TestHTTPParamsWithHandlerExample(t *testing.T) {
 	assertEqual(t, "username=admin&password=<error: invalid URL escape \"%A\">", obfuscatedParamString)
 }
 
+func TestJSONExample(t *testing.T) {
+	jsonObfuscator := obfuscate.JSON().
+		WithProperty("password", obfuscate.WithFixedLength(3), nil).
+		Build()
+	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
+	if err != nil {
+		t.Errorf("unexpected error: '%v'", err)
+	}
+	assertEqual(t, `{
+  "password": "***",
+  "username": "admin"
+}`, obfuscatedJsonString)
+}
+
+func TestJSONWithOptionsPerPropertyExample(t *testing.T) {
+	jsonObfuscator := obfuscate.JSON().
+		WithProperty("password", obfuscate.WithFixedLength(3),
+			&obfuscate.JSONPropertyObfuscationOptions{ForObjects: obfuscate.Inherit, ForArrays: obfuscate.Inherit}).
+		Build()
+	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
+	if err != nil {
+		t.Errorf("unexpected error: '%v'", err)
+	}
+	assertEqual(t, `{
+  "password": "***",
+  "username": "admin"
+}`, obfuscatedJsonString)
+}
+
+func TestJSONWithBuilderOptionsExample(t *testing.T) {
+	jsonObfuscator := obfuscate.JSON().
+		WithProperty("password", obfuscate.WithFixedLength(3), nil).
+		ForObjects(obfuscate.Inherit).
+		ForArrays(obfuscate.Inherit).
+		Build()
+	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
+	if err != nil {
+		t.Errorf("unexpected error: '%v'", err)
+	}
+	assertEqual(t, `{
+  "password": "***",
+  "username": "admin"
+}`, obfuscatedJsonString)
+}
+
+func TestJSONWithHandlerExample(t *testing.T) {
+	jsonObfuscator := obfuscate.JSON().
+		WithProperty("password", obfuscate.WithFixedLength(3), nil).
+		OnErrorInclude().
+		Build()
+	obfuscatedJsonString := jsonObfuscator.ObfuscateString(`{"username": admin, "password": "admin1234"}`)
+	assertEqual(t, "<error: invalid character 'a' looking for beginning of value>", obfuscatedJsonString)
+}
+
 func TestMapsExample(t *testing.T) {
 	mapObfuscator := obfuscate.Maps(map[string]obfuscate.Obfuscator{
 		"password": obfuscate.WithFixedLength(3),
