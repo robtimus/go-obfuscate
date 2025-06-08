@@ -221,7 +221,7 @@ Objects created by calling `Build()` on the result of `obfuscate.HTTPParameters`
 
 * `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
 * `OnErrorInclude()` will cause the error to be included in the return value.
-* `OnErrorStop()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
+* `OnErrorDiscard()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
 
 ```go
 paramsObfuscator := obfuscate.HTTPParameters().
@@ -274,7 +274,7 @@ Objects created by calling `Build()` on the result of `obfuscate.JSON` also impl
 
 * `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
 * `OnErrorInclude()` will cause the error to be included in the return value.
-* `OnErrorStop()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
+* `OnErrorDiscard()` wil cause the return value to not contain any data following the error. For security purposes parameter names and values will either be included fully or not at all.
 
 ```go
 jsonObfuscator := obfuscate.JSON().

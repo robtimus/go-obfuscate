@@ -84,8 +84,8 @@ func TestObfuscateParameterStringOnErrorInclude(t *testing.T) {
 		"")
 }
 
-func TestObfuscateParameterStringOnErrorStop(t *testing.T) {
-	builder := newHTTPParameterObfuscatorBuilder().OnErrorStop()
+func TestObfuscateParameterStringOnErrorDiscard(t *testing.T) {
+	builder := newHTTPParameterObfuscatorBuilder().OnErrorDiscard()
 
 	testObfuscateParameterStringWithErrors(t, builder, nil,
 		"foo=***&hello=world&FOO=BAR&empty=&no-value&err=",

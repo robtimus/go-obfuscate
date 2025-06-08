@@ -1879,8 +1879,8 @@ func TestObfuscateJSONStringOnErrorInclude(t *testing.T) {
 	testObfuscateJSONStringWithErrors(t, builder, nil, input, expectedOutput, "")
 }
 
-func TestObfuscateJSONStringOnErrorStop(t *testing.T) {
-	builder := JSON().OnErrorStop()
+func TestObfuscateJSONStringOnErrorDiscard(t *testing.T) {
+	builder := JSON().OnErrorDiscard()
 
 	input := inputJson + "x"
 

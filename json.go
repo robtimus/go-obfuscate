@@ -42,7 +42,7 @@ func (o JSONObfuscator) ObfuscateString(s string) string {
 			o.printf("ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
 			obfuscated = fmt.Sprintf("%s<error: %v>", obfuscated, err)
-		case OnErrorStop:
+		case OnErrorDiscard:
 			break
 		}
 	}
@@ -194,9 +194,9 @@ func (b *JSONObfuscatorBuilder) OnErrorInclude() *JSONObfuscatorBuilder {
 	return b
 }
 
-// OnErrorStop sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorStop].
-func (b *JSONObfuscatorBuilder) OnErrorStop() *JSONObfuscatorBuilder {
-	b.onError = OnErrorStop
+// OnErrorDiscard sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorDiscard].
+func (b *JSONObfuscatorBuilder) OnErrorDiscard() *JSONObfuscatorBuilder {
+	b.onError = OnErrorDiscard
 	b.logger = nil
 	return b
 }

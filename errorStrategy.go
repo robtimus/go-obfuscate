@@ -12,8 +12,8 @@ func (es ErrorStrategy) String() string {
 		return "OnErrorLog"
 	case OnErrorInclude:
 		return "OnErrorInclude"
-	case OnErrorStop:
-		return "OnErrorStop"
+	case OnErrorDiscard:
+		return "OnErrorDiscard"
 	}
 	return fmt.Sprintf("ErrorStrategy(%d)", int(es))
 }
@@ -23,8 +23,8 @@ const (
 	OnErrorLog ErrorStrategy = iota
 	// OnErrorInclude will cause obfuscation to stop when an error occurs. The error will be included in the obfuscation result.
 	OnErrorInclude
-	// OnErrorStop will cause obfuscation to stop when an error occurs. The error will not be visible in any way.
-	OnErrorStop
+	// OnErrorDiscard will cause obfuscation to stop when an error occurs. The error will not be visible in any way.
+	OnErrorDiscard
 )
 
 var defaultPrintf = func(format string, v ...any) {

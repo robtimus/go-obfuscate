@@ -22,8 +22,8 @@ func TestErrorStrategyOnErrorInclude(t *testing.T) {
 	testErrorStrategy(t, OnErrorInclude, 1, "OnErrorInclude")
 }
 
-func TestErrorStrategyOnErrorStop(t *testing.T) {
-	testErrorStrategy(t, OnErrorStop, 2, "OnErrorStop")
+func TestErrorStrategyOnErrorDiscard(t *testing.T) {
+	testErrorStrategy(t, OnErrorDiscard, 2, "OnErrorDiscard")
 }
 
 func TestErrorStrategyUnknown(t *testing.T) {

@@ -46,7 +46,7 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 			o.printf("ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
 			builder.WriteString(fmt.Sprintf("<error: %v>", err))
-		case OnErrorStop:
+		case OnErrorDiscard:
 			break
 		}
 	}
@@ -125,9 +125,9 @@ func (b *HTTPParameterObfuscatorBuilder) OnErrorInclude() *HTTPParameterObfuscat
 	return b
 }
 
-// OnErrorStop sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorStop].
-func (b *HTTPParameterObfuscatorBuilder) OnErrorStop() *HTTPParameterObfuscatorBuilder {
-	b.onError = OnErrorStop
+// OnErrorDiscard sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorDiscard].
+func (b *HTTPParameterObfuscatorBuilder) OnErrorDiscard() *HTTPParameterObfuscatorBuilder {
+	b.onError = OnErrorDiscard
 	b.logger = nil
 	return b
 }
