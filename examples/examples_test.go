@@ -138,10 +138,8 @@ func TestHTTPParamsExample(t *testing.T) {
 	obfuscatedUsername := paramsObfuscator.ObfuscateParameter("username", "admin")
 	assertEqual(t, "admin", obfuscatedUsername)
 	obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username=admin&password=admin1234")
-	if err != nil {
-		t.Errorf("unexpected error: '%v'", err)
-	}
 	assertEqual(t, "username=admin&password=***", obfuscatedParamString)
+	assertEqual(t, nil, err)
 }
 
 func TestHTTPParamsWithHandlerExample(t *testing.T) {
@@ -158,13 +156,11 @@ func TestJSONExample(t *testing.T) {
 		WithProperty("password", obfuscate.WithFixedLength(3), nil).
 		Build()
 	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
-	if err != nil {
-		t.Errorf("unexpected error: '%v'", err)
-	}
 	assertEqual(t, `{
   "password": "***",
   "username": "admin"
 }`, obfuscatedJsonString)
+	assertEqual(t, nil, err)
 }
 
 func TestJSONWithOptionsPerPropertyExample(t *testing.T) {
@@ -175,13 +171,11 @@ func TestJSONWithOptionsPerPropertyExample(t *testing.T) {
 		}).
 		Build()
 	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
-	if err != nil {
-		t.Errorf("unexpected error: '%v'", err)
-	}
 	assertEqual(t, `{
   "password": "***",
   "username": "admin"
 }`, obfuscatedJsonString)
+	assertEqual(t, nil, err)
 }
 
 func TestJSONWithBuilderOptionsExample(t *testing.T) {
@@ -191,13 +185,11 @@ func TestJSONWithBuilderOptionsExample(t *testing.T) {
 		ForArrays(obfuscate.Inherit).
 		Build()
 	obfuscatedJsonString, err := jsonObfuscator.ParseAndObfuscateString(`{"username": "admin", "password": "admin1234"}`)
-	if err != nil {
-		t.Errorf("unexpected error: '%v'", err)
-	}
 	assertEqual(t, `{
   "password": "***",
   "username": "admin"
 }`, obfuscatedJsonString)
+	assertEqual(t, nil, err)
 }
 
 func TestJSONWithHandlerExample(t *testing.T) {

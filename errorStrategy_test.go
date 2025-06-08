@@ -33,17 +33,8 @@ func TestErrorStrategyUnknown(t *testing.T) {
 func testErrorStrategy(t *testing.T, onError ErrorStrategy, expectedValue int, expectedString string) {
 	t.Helper()
 
-	actualValue := int(onError)
-
-	if actualValue != expectedValue {
-		t.Errorf("expected: '%v', actual: '%v'", expectedValue, actualValue)
-	}
-
-	actualString := onError.String()
-
-	if actualString != expectedString {
-		t.Errorf("expected: '%v', actual: '%v'", expectedString, actualString)
-	}
+	assertEqual(t, expectedValue, int(onError))
+	assertEqual(t, expectedString, onError.String())
 }
 
 type CapturingLogger struct {

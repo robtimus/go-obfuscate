@@ -95,11 +95,7 @@ const inputJson = `{
 func TestJSONDefaultErrorStrategy(t *testing.T) {
 	obfuscator := JSON().Build()
 
-	actual := obfuscator.onError
-
-	expected := OnErrorLog
-
-	assertEqual(t, expected, actual)
+	assertEqual(t, OnErrorLog, obfuscator.onError)
 }
 
 func TestJSONObfuscatorWithDefaultSettings(t *testing.T) {
@@ -1844,14 +1840,10 @@ func TestJSONObfuscatorWithDefaultInheritOverridableForArrays(t *testing.T) {
 	testJSONObfuscation(t, jsonObfuscator, expected)
 }
 
-func testJSONObfuscation(t *testing.T, obfuscator ParsingObfuscator, expectedOutput string) {
+func testJSONObfuscation(t *testing.T, obfuscator Obfuscator, expectedObfuscated string) {
 	t.Helper()
 
-	obfuscated, err := obfuscator.ParseAndObfuscateString(inputJson)
-	if err != nil {
-		t.Errorf("unexpected error: '%v'", err)
-	}
-	assertEqual(t, expectedOutput, obfuscated)
+	testParseAndObfuscateString(t, obfuscator, inputJson, expectedObfuscated)
 }
 
 func TestObfuscateJSONStringOnErrorLog(t *testing.T) {
@@ -1874,9 +1866,8 @@ func TestObfuscateJSONStringOnErrorInclude(t *testing.T) {
 
 	var v any
 	err := json.Unmarshal([]byte(input), &v)
-	expectedOutput := fmt.Sprintf("<error: %v>", err)
 
-	testObfuscateJSONStringWithErrors(t, builder, nil, input, expectedOutput, "")
+	testObfuscateJSONStringWithErrors(t, builder, nil, input, fmt.Sprintf("<error: %v>", err), "")
 }
 
 func TestObfuscateJSONStringOnErrorDiscard(t *testing.T) {
@@ -1887,11 +1878,11 @@ func TestObfuscateJSONStringOnErrorDiscard(t *testing.T) {
 	testObfuscateJSONStringWithErrors(t, builder, nil, input, "", "")
 }
 
-func testObfuscateJSONStringWithErrors(t *testing.T, builder *JSONObfuscatorBuilder, logger *CapturingLogger, input, expectedOutput, expectedLogged string) {
+func testObfuscateJSONStringWithErrors(t *testing.T, builder *JSONObfuscatorBuilder, logger *CapturingLogger, input, expectedObfuscated, expectedLogged string) {
 	t.Helper()
 
 	obfuscator := WithFixedLength(3)
-	var jsonObfuscator Obfuscator = builder.
+	jsonObfuscator := builder.
 		WithProperty("string", obfuscator, nil).
 		WithProperty("int", obfuscator, nil).
 		WithProperty("float", obfuscator, nil).
@@ -1902,17 +1893,29 @@ func testObfuscateJSONStringWithErrors(t *testing.T, builder *JSONObfuscatorBuil
 		WithProperty("null", obfuscator, nil).
 		Build()
 
-	actualOutput := jsonObfuscator.ObfuscateString(input)
+	testObfuscateStringWithErrors(t, jsonObfuscator, logger, input, expectedObfuscated, expectedLogged)
+}
 
-	if actualOutput != expectedOutput {
-		t.Errorf("expected: '%v', actual: '%v'", expectedOutput, actualOutput)
-	}
+func TestJSONObfuscatorChaining(t *testing.T) {
+	obfuscator := WithFixedLength(3)
+	jsonObfuscator := JSON().
+		WithProperty("string", obfuscator, nil).
+		WithProperty("int", obfuscator, nil).
+		Build()
 
-	if logger != nil {
-		actualLogged := logger.String()
+	input := `{
+  "string": "string\"int",
+  "int": 123456,
+  "float": 1234.56
+}postfix`
 
-		if actualLogged != expectedLogged {
-			t.Errorf("expected: '%v', actual: '%v'", expectedLogged, actualLogged)
-		}
-	}
+	expected := `{
+  "float": 1234.56,
+  "int": "***",
+  "string": "***"
+}***`
+
+	obfuscator = jsonObfuscator.UntilLength(len(input) - 7).Then(obfuscator)
+
+	testParseAndObfuscateString(t, obfuscator, input, expected)
 }

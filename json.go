@@ -13,10 +13,10 @@ type JSONObfuscator struct {
 	forObjects ObfuscationMode
 	forArrays  ObfuscationMode
 	onError    ErrorStrategy
-	printf     func(format string, v ...any)
+	logger     *log.Logger
 }
 
-// ParseAndObfuscateString implements the [ParsingObfuscator] interface.
+// ParseAndObfuscateString implements the [Obfuscator] interface.
 func (o JSONObfuscator) ParseAndObfuscateString(s string) (string, error) {
 	var parsed any
 	err := json.Unmarshal([]byte(s), &parsed)
@@ -39,7 +39,7 @@ func (o JSONObfuscator) ObfuscateString(s string) string {
 	if err != nil {
 		switch o.onError {
 		case OnErrorLog:
-			o.printf("ObfuscateString error: %v\n", err)
+			logError(o.logger, "ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
 			obfuscated = fmt.Sprintf("%s<error: %v>", obfuscated, err)
 		case OnErrorDiscard:
@@ -180,7 +180,7 @@ func (b *JSONObfuscatorBuilder) ForArrays(mode ObfuscationMode) *JSONObfuscatorB
 }
 
 // OnErrorLog sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorLog].
-// An optional logger can be given to use instead of the default [fmt.Printf].
+// If the given logger is nil, [fmt.Printf] will be used instead.
 func (b *JSONObfuscatorBuilder) OnErrorLog(logger *log.Logger) *JSONObfuscatorBuilder {
 	b.onError = OnErrorLog
 	b.logger = logger
@@ -203,17 +203,12 @@ func (b *JSONObfuscatorBuilder) OnErrorDiscard() *JSONObfuscatorBuilder {
 
 // Build creates a new JSON obfuscator using the contents of the builder.
 func (b *JSONObfuscatorBuilder) Build() JSONObfuscator {
-	printf := defaultPrintf
-	if b.logger != nil {
-		printf = b.logger.Printf
-	}
-
 	return JSONObfuscator{
 		properties: maps.Clone(b.properties),
 		forObjects: b.forObjects,
 		forArrays:  b.forArrays,
 		onError:    b.onError,
-		printf:     printf,
+		logger:     b.logger,
 	}
 }
 

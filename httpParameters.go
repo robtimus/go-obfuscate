@@ -13,7 +13,7 @@ import (
 type HTTPParameterObfuscator struct {
 	parameters map[string]Obfuscator
 	onError    ErrorStrategy
-	printf     func(format string, v ...any)
+	logger     *log.Logger
 }
 
 // ObfuscateParameter obfuscates the given value for a parameter with the given name.
@@ -26,7 +26,7 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 
 // strings.Builder's WriteString method is documented to return a nil error, so no need to check for it in methods below
 
-// ParseAndObfuscateString implements the [ParsingObfuscator] interface.
+// ParseAndObfuscateString implements the [Obfuscator] interface.
 func (o HTTPParameterObfuscator) ParseAndObfuscateString(s string) (string, error) {
 	builder := strings.Builder{}
 	err := o.obfuscateParameterString(s, &builder)
@@ -43,7 +43,7 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	if err != nil {
 		switch o.onError {
 		case OnErrorLog:
-			o.printf("ObfuscateString error: %v\n", err)
+			logError(o.logger, "ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
 			builder.WriteString(fmt.Sprintf("<error: %v>", err))
 		case OnErrorDiscard:
@@ -111,7 +111,7 @@ func (b *HTTPParameterObfuscatorBuilder) WithParameter(parameterName string, obf
 }
 
 // OnErrorLog sets the strategy to follow when an error occurs while obfuscating a string to [OnErrorLog].
-// An optional logger can be given to use instead of the default [fmt.Printf].
+// If the given logger is nil, [fmt.Printf] will be used instead.
 func (b *HTTPParameterObfuscatorBuilder) OnErrorLog(logger *log.Logger) *HTTPParameterObfuscatorBuilder {
 	b.onError = OnErrorLog
 	b.logger = logger
@@ -134,14 +134,9 @@ func (b *HTTPParameterObfuscatorBuilder) OnErrorDiscard() *HTTPParameterObfuscat
 
 // Build creates a new HTTP parameter obfuscator using the contents of the builder.
 func (b *HTTPParameterObfuscatorBuilder) Build() HTTPParameterObfuscator {
-	printf := defaultPrintf
-	if b.logger != nil {
-		printf = b.logger.Printf
-	}
-
 	return HTTPParameterObfuscator{
 		parameters: maps.Clone(b.parameters),
 		onError:    b.onError,
-		printf:     printf,
+		logger:     b.logger,
 	}
 }

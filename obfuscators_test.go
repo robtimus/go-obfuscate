@@ -21,6 +21,7 @@ func TestAll(t *testing.T) {
 		expected := parameters[i].expected
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
+			testParseAndObfuscateString(t, obfuscator, input, expected)
 		})
 	}
 }
@@ -32,6 +33,7 @@ func TestNone(t *testing.T) {
 		expected := input
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
+			testParseAndObfuscateString(t, obfuscator, input, expected)
 		})
 	}
 }
@@ -54,6 +56,7 @@ func TestWithFixedLength(t *testing.T) {
 		for _, input := range inputs {
 			t.Run(fmt.Sprintf("WithFixedLength(%d) applied to '%s'", fixedLength, input), func(t *testing.T) {
 				testObfuscateString(t, obfuscator, input, expected)
+				testParseAndObfuscateString(t, obfuscator, input, expected)
 			})
 		}
 	}
@@ -72,6 +75,7 @@ func TestWithFixedValue(t *testing.T) {
 			expected := fixedValue
 			t.Run(fmt.Sprintf("WithFixedValue('%s') applied to '%s'", fixedValue, input), func(t *testing.T) {
 				testObfuscateString(t, obfuscator, input, expected)
+				testParseAndObfuscateString(t, obfuscator, input, expected)
 			})
 		}
 	}
@@ -85,7 +89,17 @@ func testObfuscateString(t *testing.T, obfuscator Obfuscator, input, expected st
 	t.Helper()
 
 	actual := obfuscator.ObfuscateString(input)
+
 	assertEqual(t, expected, actual)
+}
+
+func testParseAndObfuscateString(t *testing.T, obfuscator Obfuscator, input, expected string) {
+	t.Helper()
+
+	actual, err := obfuscator.ParseAndObfuscateString(input)
+
+	assertEqual(t, expected, actual)
+	assertEqual(t, nil, err)
 }
 
 func assertEqual[T comparable](t *testing.T, expected, actual T) {

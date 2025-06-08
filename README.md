@@ -217,7 +217,7 @@ obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username
 // obfuscatedParamString is "username=admin&password=***"
 ```
 
-Objects created by calling `Build()` on the result of `obfuscate.HTTPParameters` also implement `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing parameter strings can fail with an error, the builder returned by `obfuscate.HTTPParameters` can be configured to specify how to handle errors:
+Objects created by calling `Build()` on the result of `obfuscate.HTTPParameters` implement `obfuscate.Obfuscator`. Calling `ObfuscateString` works almost the same as calling `ParseAndObfuscateString`. Because parsing parameter strings can fail with an error, the builder returned by `obfuscate.HTTPParameters` can be configured to specify how to handle errors:
 
 * `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
 * `OnErrorInclude()` will cause the error to be included in the return value.
@@ -270,7 +270,7 @@ In both cases, `ForObjects` and `ForArrays` can take the following values:
 * `obfuscate.Inherit` to obfuscate each nested scalar property value or array element using the given obfuscator.
 * `obfuscate.InheritOverridable` to obfuscate each nested scalar property value or array element using the given obfuscator; however, if a nested property has its own obfuscator defined this will be used instead.
 
-Objects created by calling `Build()` on the result of `obfuscate.JSON` also implement `obfuscate.Obfuscator`. This works almost the same as calling `ParseAndObfuscateString`. Because parsing JSON strings can fail with an error, the builder returned by `obfuscate.JSON` can be configured to specify how to handle errors:
+Objects created by calling `Build()` on the result of `obfuscate.JSON` implement `obfuscate.Obfuscator`. Calling `ObfuscateString` works almost the same as calling `ParseAndObfuscateString`. Because parsing JSON strings can fail with an error, the builder returned by `obfuscate.JSON` can be configured to specify how to handle errors:
 
 * `OnErrorLog(logger)` (default) will cause the error to be logged. If a non-`nil` [`log.Logger`](https://pkg.go.dev/log#Logger) is given its [`Printf`](https://pkg.go.dev/log#Logger.Printf) method will be used, otherwise [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) will be used.
 * `OnErrorInclude()` will cause the error to be included in the return value.

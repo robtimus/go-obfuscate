@@ -1,6 +1,9 @@
 package obfuscate
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 // ErrorStrategy represents the strategy to follow when an error occurs while obfuscating a string.
 type ErrorStrategy int
@@ -27,6 +30,10 @@ const (
 	OnErrorDiscard
 )
 
-var defaultPrintf = func(format string, v ...any) {
-	fmt.Printf(format, v...)
+func logError(logger *log.Logger, format string, v ...any) {
+	if logger == nil {
+		fmt.Printf(format, v...)
+	} else {
+		logger.Printf(format, v...)
+	}
 }

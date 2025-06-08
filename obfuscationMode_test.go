@@ -33,15 +33,6 @@ func TestObfuscationModeUnknown(t *testing.T) {
 func testObfuscationMode(t *testing.T, obfuscationMode ObfuscationMode, expectedValue int, expectedString string) {
 	t.Helper()
 
-	actualValue := int(obfuscationMode)
-
-	if actualValue != expectedValue {
-		t.Errorf("expected: '%v', actual: '%v'", expectedValue, actualValue)
-	}
-
-	actualString := obfuscationMode.String()
-
-	if actualString != expectedString {
-		t.Errorf("expected: '%v', actual: '%v'", expectedString, actualString)
-	}
+	assertEqual(t, expectedValue, int(obfuscationMode))
+	assertEqual(t, expectedString, obfuscationMode.String())
 }
