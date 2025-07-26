@@ -1853,6 +1853,7 @@ func TestObfuscateJSONStringOnErrorLog(t *testing.T) {
 	input := inputJson + "x"
 
 	var v any
+
 	err := json.Unmarshal([]byte(input), &v)
 	expectedLogged := fmt.Sprintf("ObfuscateString error: %v\n", err)
 
@@ -1865,6 +1866,7 @@ func TestObfuscateJSONStringOnErrorInclude(t *testing.T) {
 	input := inputJson + "x"
 
 	var v any
+
 	err := json.Unmarshal([]byte(input), &v)
 
 	testObfuscateJSONStringWithErrors(t, builder, nil, input, fmt.Sprintf("<error: %v>", err), "")

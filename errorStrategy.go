@@ -18,6 +18,7 @@ func (es ErrorStrategy) String() string {
 	case OnErrorDiscard:
 		return "OnErrorDiscard"
 	}
+
 	return fmt.Sprintf("ErrorStrategy(%d)", int(es))
 }
 

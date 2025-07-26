@@ -9,6 +9,7 @@ func TestObfuscateHeaderValue(t *testing.T) {
 	obfuscator := HTTPHeaders(map[string]Obfuscator{
 		"AUTHORIZATION": WithFixedLength(3),
 	})
+
 	parameters := []struct {
 		headerName, headerValue, expected string
 	}{
@@ -20,6 +21,7 @@ func TestObfuscateHeaderValue(t *testing.T) {
 		headerName := parameters[i].headerName
 		headerValue := parameters[i].headerValue
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s': '%s'", headerName, headerValue), func(t *testing.T) {
 			actual := obfuscator.ObfuscateHeaderValue(headerName, headerValue)
 			assertEqual(t, expected, actual)
@@ -32,6 +34,7 @@ func TestObfuscateHeaderValues(t *testing.T) {
 		"AUTHORIZATION": WithFixedLength(3),
 		"MULTIVALUED":   Portion().KeepAtEnd(2).Build(),
 	})
+
 	parameters := []struct {
 		headerName             string
 		headerValues, expected []string
@@ -45,6 +48,7 @@ func TestObfuscateHeaderValues(t *testing.T) {
 		headerName := parameters[i].headerName
 		headerValues := parameters[i].headerValues
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s': '%s'", headerName, headerValues), func(t *testing.T) {
 			actual := obfuscator.ObfuscateHeaderValues(headerName, headerValues)
 			if slicesDiffer(actual, expected) {

@@ -42,6 +42,7 @@ type SplitPoint struct {
 // This function panics if splitLength is negative.
 func NewSplitPoint(splitStart func(s string) int, splitLength int) SplitPoint {
 	validateNonNegative(splitLength, "splitLength")
+
 	return SplitPoint{splitStart, splitLength}
 }
 
@@ -67,6 +68,7 @@ func AtLast(s string) SplitPoint {
 // AtNth panics if the given zero-based occurrence is negative.
 func AtNth(s string, occurrence int) SplitPoint {
 	validateNonNegative(occurrence, "occurrence")
+
 	return NewSplitPoint(func(input string) int {
 		return nthIndex(input, s, occurrence)
 	}, len(s))
@@ -76,15 +78,18 @@ func nthIndex(s, substr string, occurrence int) int {
 	// Go doesn't have an index-lookup function with a start index so use string slicing instead
 	source := s
 	sourceStart := 0
+
 	index := strings.Index(source, substr)
 	for i := 1; i <= occurrence && index != -1; i++ {
 		source = source[index+1:]
 		sourceStart = sourceStart + index + 1
 		index = strings.Index(source, substr)
 	}
+
 	if index == -1 {
 		return index
 	}
+
 	return sourceStart + index
 }
 
@@ -96,7 +101,9 @@ func (sp SplitPoint) SplitTo(beforeSplitPoint, afterSplitPoint Obfuscator) Obfus
 		if splitStartIndex < 0 {
 			return beforeSplitPoint.ObfuscateString(s)
 		}
+
 		splitEndIndex := splitStartIndex + sp.splitLength
+
 		return beforeSplitPoint.ObfuscateString(s[:splitStartIndex]) +
 			s[splitStartIndex:splitEndIndex] +
 			afterSplitPoint.ObfuscateString(s[splitEndIndex:])

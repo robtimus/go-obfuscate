@@ -10,5 +10,6 @@ func Slice[T any](s []T, obfuscator Obfuscator) []string {
 	for index, value := range s {
 		result[index] = obfuscator.ObfuscateString(fmt.Sprintf("%v", value))
 	}
+
 	return result
 }

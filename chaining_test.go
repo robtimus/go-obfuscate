@@ -7,6 +7,7 @@ import (
 
 func TestNoneUntilLength4ThenAllUntilLength12ThenNone(t *testing.T) {
 	obfuscator := None().UntilLength(4).Then(All()).UntilLength(12).Then(None())
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -30,6 +31,7 @@ func TestNoneUntilLength4ThenAllUntilLength12ThenNone(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -39,6 +41,7 @@ func TestNoneUntilLength4ThenAllUntilLength12ThenNone(t *testing.T) {
 
 func TestNoneUntilLength4ThenWithFixedLength3(t *testing.T) {
 	obfuscator := None().UntilLength(4).Then(WithFixedLength(3))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -62,6 +65,7 @@ func TestNoneUntilLength4ThenWithFixedLength3(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -71,6 +75,7 @@ func TestNoneUntilLength4ThenWithFixedLength3(t *testing.T) {
 
 func TestWithFixedLength3UntilLength4ThenNone(t *testing.T) {
 	obfuscator := WithFixedLength(3).UntilLength(4).Then(None())
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -94,6 +99,7 @@ func TestWithFixedLength3UntilLength4ThenNone(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -103,6 +109,7 @@ func TestWithFixedLength3UntilLength4ThenNone(t *testing.T) {
 
 func TestWithFixedLength3UntilLength4ThenWithFixedValueXxx(t *testing.T) {
 	obfuscator := WithFixedLength(3).UntilLength(4).Then(WithFixedValue("xxx"))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -126,6 +133,7 @@ func TestWithFixedLength3UntilLength4ThenWithFixedValueXxx(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -135,21 +143,25 @@ func TestWithFixedLength3UntilLength4ThenWithFixedValueXxx(t *testing.T) {
 
 func TestInvalidInputLengths(t *testing.T) {
 	obfuscator := None()
+
 	testPanic(t, "First prefix length", func() {
 		obfuscator.UntilLength(0)
 	}, "prefixLength: 0 < 1")
 
 	obfuscator = None().UntilLength(1).Then(All())
+
 	testPanic(t, "Second prefix length", func() {
 		obfuscator.UntilLength(1)
 	}, "prefixLength: 1 < 2")
 
 	obfuscator = None().UntilLength(1).Then(All()).UntilLength(2).Then(None())
+
 	testPanic(t, "Third prefix length", func() {
 		obfuscator.UntilLength(2)
 	}, "prefixLength: 2 < 3")
 
 	obfuscator = None().UntilLength(1).Then(All()).UntilLength(2).Then(None()).UntilLength(3).Then(All())
+
 	testPanic(t, "Fourth prefix length", func() {
 		obfuscator.UntilLength(3)
 	}, "prefixLength: 3 < 4")
@@ -159,6 +171,7 @@ func TestFirstFails(t *testing.T) {
 	obfuscator := NewObfuscatorOnErrorDiscard(func(s string) (string, error) {
 		return s, errParse
 	}).UntilLength(4).Then(All())
+
 	parameters := []struct {
 		input, expected, expectedWithParse string
 	}{
@@ -173,6 +186,7 @@ func TestFirstFails(t *testing.T) {
 		input := parameters[i].input
 		expected := parameters[i].expected
 		expectedWithParse := parameters[i].expectedWithParse
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 
@@ -189,6 +203,7 @@ func TestSecondFails(t *testing.T) {
 		return s, errParse
 	})
 	obfuscator = All().UntilLength(4).Then(obfuscator)
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -202,12 +217,14 @@ func TestSecondFails(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 
 			obfuscated, err := obfuscator.ParseAndObfuscateString(input)
 
 			assertEqual(t, expected, obfuscated)
+
 			if len(input) > 4 {
 				assertEqual(t, errParse, err)
 			} else {

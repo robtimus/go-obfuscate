@@ -8,6 +8,7 @@ import (
 
 func TestKeepAtStart(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -20,6 +21,7 @@ func TestKeepAtStart(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -29,6 +31,7 @@ func TestKeepAtStart(t *testing.T) {
 
 func TestKeepAtEnd(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -41,6 +44,7 @@ func TestKeepAtEnd(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -50,6 +54,7 @@ func TestKeepAtEnd(t *testing.T) {
 
 func TestKeepAtStartAndKeepAtEnd(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).KeepAtEnd(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -62,6 +67,7 @@ func TestKeepAtStartAndKeepAtEnd(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).KeepAtEnd(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -71,6 +77,7 @@ func TestKeepAtStartAndKeepAtEnd(t *testing.T) {
 
 func TestKeepAtStartAndAtLeastFromEnd(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).AtLeastFromEnd(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -83,6 +90,7 @@ func TestKeepAtStartAndAtLeastFromEnd(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).AtLeastFromEnd(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -92,6 +100,7 @@ func TestKeepAtStartAndAtLeastFromEnd(t *testing.T) {
 
 func TestKeepAtEndAndAtLeastFromStart(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).AtLeastFromStart(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -104,6 +113,7 @@ func TestKeepAtEndAndAtLeastFromStart(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4).AtLeastFromStart(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -113,6 +123,7 @@ func TestKeepAtEndAndAtLeastFromStart(t *testing.T) {
 
 func TestKeepAtStartAndFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).FixedTotalLength(9).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -125,6 +136,7 @@ func TestKeepAtStartAndFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).FixedTotalLength(9) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -134,6 +146,7 @@ func TestKeepAtStartAndFixedTotalLength(t *testing.T) {
 
 func TestKeepAtEndAndFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).FixedTotalLength(9).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -146,6 +159,7 @@ func TestKeepAtEndAndFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4).FixedTotalLength(9) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -155,6 +169,7 @@ func TestKeepAtEndAndFixedTotalLength(t *testing.T) {
 
 func TestKeepAtStartAndKeepAtEndAndFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).KeepAtEnd(4).FixedTotalLength(9).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -167,6 +182,7 @@ func TestKeepAtStartAndKeepAtEndAndFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).KeepAtEnd(4).FixedTotalLength(9) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -176,6 +192,7 @@ func TestKeepAtStartAndKeepAtEndAndFixedTotalLength(t *testing.T) {
 
 func TestKeepAtStartAndAtLeastFromEndAndFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).AtLeastFromEnd(4).FixedTotalLength(9).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -188,6 +205,7 @@ func TestKeepAtStartAndAtLeastFromEndAndFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).AtLeastFromEnd(4).FixedTotalLength(9) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -197,6 +215,7 @@ func TestKeepAtStartAndAtLeastFromEndAndFixedTotalLength(t *testing.T) {
 
 func TestKeepAtEndAndAtLeastFromStartAndFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).AtLeastFromStart(4).FixedTotalLength(9).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -209,6 +228,7 @@ func TestKeepAtEndAndAtLeastFromStartAndFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4).AtLeastFromStart(4).FixedTotalLength(9) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -218,6 +238,7 @@ func TestKeepAtEndAndAtLeastFromStartAndFixedTotalLength(t *testing.T) {
 
 func TestKeepAtStartAndEqualFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).FixedTotalLength(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -230,6 +251,7 @@ func TestKeepAtStartAndEqualFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).FixedTotalLength(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -239,6 +261,7 @@ func TestKeepAtStartAndEqualFixedTotalLength(t *testing.T) {
 
 func TestKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).FixedTotalLength(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -251,6 +274,7 @@ func TestKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4).FixedTotalLength(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -260,6 +284,7 @@ func TestKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 
 func TestKeepAtStartAndKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).KeepAtEnd(4).FixedTotalLength(8).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -272,6 +297,7 @@ func TestKeepAtStartAndKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).KeepAtEnd(4).FixedTotalLength(8) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -281,6 +307,7 @@ func TestKeepAtStartAndKeepAtEndAndEqualFixedTotalLength(t *testing.T) {
 
 func TestKeepAtStartAndAtLeastFromEndAndEqualFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(4).AtLeastFromEnd(4).FixedTotalLength(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -293,6 +320,7 @@ func TestKeepAtStartAndAtLeastFromEndAndEqualFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(4).AtLeastFromEnd(4).FixedTotalLength(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -302,6 +330,7 @@ func TestKeepAtStartAndAtLeastFromEndAndEqualFixedTotalLength(t *testing.T) {
 
 func TestKeepAtEndAndAtLeastFromStartAndEqualFixedTotalLength(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(4).AtLeastFromStart(4).FixedTotalLength(4).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -314,6 +343,7 @@ func TestKeepAtEndAndAtLeastFromStartAndEqualFixedTotalLength(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(4).AtLeastFromStart(4).FixedTotalLength(4) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -323,6 +353,7 @@ func TestKeepAtEndAndAtLeastFromStartAndEqualFixedTotalLength(t *testing.T) {
 
 func TestLastTwoCharactersOnly(t *testing.T) {
 	obfuscator := Portion().KeepAtStart(math.MaxInt).AtLeastFromEnd(2).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -335,6 +366,7 @@ func TestLastTwoCharactersOnly(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtStart(MAX).AtLeastFromEnd(2) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -344,6 +376,7 @@ func TestLastTwoCharactersOnly(t *testing.T) {
 
 func TestFirstTwoCharactersOnly(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(math.MaxInt).AtLeastFromStart(2).Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -356,6 +389,7 @@ func TestFirstTwoCharactersOnly(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(MAX).AtLeastFromStart(2) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -365,6 +399,7 @@ func TestFirstTwoCharactersOnly(t *testing.T) {
 
 func TestCustomMask(t *testing.T) {
 	obfuscator := Portion().KeepAtEnd(math.MaxInt).AtLeastFromStart(2).Mask("x").Build()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -377,6 +412,7 @@ func TestCustomMask(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("KeepAtEnd(MAX).AtLeastFromStart(2) applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)

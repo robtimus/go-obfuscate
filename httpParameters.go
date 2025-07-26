@@ -21,6 +21,7 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 	if obfuscator, ok := o.parameters[name]; ok {
 		return obfuscator.ObfuscateString(value)
 	}
+
 	return value
 }
 
@@ -30,6 +31,7 @@ func (o HTTPParameterObfuscator) ObfuscateParameter(name, value string) string {
 func (o HTTPParameterObfuscator) ParseAndObfuscateString(s string) (string, error) {
 	builder := strings.Builder{}
 	err := o.obfuscateParameterString(s, &builder)
+
 	return builder.String(), err
 }
 
@@ -39,6 +41,7 @@ func (o HTTPParameterObfuscator) ParseAndObfuscateString(s string) (string, erro
 // provided when the HTTPParameterObfuscator instance was created.
 func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 	builder := strings.Builder{}
+
 	err := o.obfuscateParameterString(s, &builder)
 	if err != nil {
 		switch o.onError {
@@ -50,6 +53,7 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 			break
 		}
 	}
+
 	return builder.String()
 }
 
@@ -65,10 +69,13 @@ func (o HTTPParameterObfuscator) obfuscateParameterString(s string, builder *str
 		if err != nil {
 			return err
 		}
+
 		builder.WriteString("&")
+
 		s = s[index+1:]
 		index = strings.Index(s, "&")
 	}
+
 	return o.obfuscateParameter(s, builder)
 }
 
@@ -81,14 +88,17 @@ func (o HTTPParameterObfuscator) obfuscateParameter(s string, builder *strings.B
 		if err != nil {
 			return err
 		}
+
 		builder.WriteString(s[:index+1])
 
 		value, err := url.QueryUnescape(s[index+1:])
 		if err != nil {
 			return err
 		}
+
 		builder.WriteString(o.ObfuscateParameter(name, value))
 	}
+
 	return nil
 }
 
@@ -107,6 +117,7 @@ func HTTPParameters() *HTTPParameterObfuscatorBuilder {
 // WithParameter registers a parameter to obfuscate. It uses the given obfuscator for obfuscating any occurrence of a parameter with the given name.
 func (b *HTTPParameterObfuscatorBuilder) WithParameter(parameterName string, obfuscator Obfuscator) *HTTPParameterObfuscatorBuilder {
 	b.parameters[parameterName] = obfuscator
+
 	return b
 }
 
@@ -115,6 +126,7 @@ func (b *HTTPParameterObfuscatorBuilder) WithParameter(parameterName string, obf
 func (b *HTTPParameterObfuscatorBuilder) OnErrorLog(logger *log.Logger) *HTTPParameterObfuscatorBuilder {
 	b.onError = OnErrorLog
 	b.logger = logger
+
 	return b
 }
 
@@ -122,6 +134,7 @@ func (b *HTTPParameterObfuscatorBuilder) OnErrorLog(logger *log.Logger) *HTTPPar
 func (b *HTTPParameterObfuscatorBuilder) OnErrorInclude() *HTTPParameterObfuscatorBuilder {
 	b.onError = OnErrorInclude
 	b.logger = nil
+
 	return b
 }
 
@@ -129,6 +142,7 @@ func (b *HTTPParameterObfuscatorBuilder) OnErrorInclude() *HTTPParameterObfuscat
 func (b *HTTPParameterObfuscatorBuilder) OnErrorDiscard() *HTTPParameterObfuscatorBuilder {
 	b.onError = OnErrorDiscard
 	b.logger = nil
+
 	return b
 }
 

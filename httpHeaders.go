@@ -16,6 +16,7 @@ func HTTPHeaders(obfuscators map[string]Obfuscator) HTTPHeaderObfuscator {
 	for headerName, obfuscator := range obfuscators {
 		obfuscatorMap[strings.ToLower(headerName)] = obfuscator
 	}
+
 	return HTTPHeaderObfuscator{obfuscators: obfuscatorMap}
 }
 
@@ -24,6 +25,7 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderValue(headerName, headerValue strin
 	if obfuscator, ok := o.obfuscators[strings.ToLower(headerName)]; ok {
 		return obfuscator.ObfuscateString(headerValue)
 	}
+
 	return headerValue
 }
 
@@ -34,8 +36,10 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderValues(headerName string, headerVal
 		for index, headerValue := range headerValues {
 			result[index] = obfuscator.ObfuscateString(headerValue)
 		}
+
 		return result
 	}
+
 	return slices.Clone(headerValues)
 }
 
@@ -45,6 +49,7 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderMap(headerMap map[string]string) ma
 	for headerName, headerValue := range headerMap {
 		result[headerName] = o.ObfuscateHeaderValue(headerName, headerValue)
 	}
+
 	return result
 }
 
@@ -54,5 +59,6 @@ func (o HTTPHeaderObfuscator) ObfuscateHeaderMultiMap(headerMap map[string][]str
 	for headerName, headerValue := range headerMap {
 		result[headerName] = o.ObfuscateHeaderValues(headerName, headerValue)
 	}
+
 	return result
 }

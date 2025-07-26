@@ -41,7 +41,9 @@ func WithFixedLengthWithMask(fixedLength int, mask string) Obfuscator {
 	if fixedLength < 0 {
 		log.Panicf("fixedLength: %d < 0", fixedLength)
 	}
+
 	fixedValue := strings.Repeat(mask, fixedLength)
+
 	return WithFixedValue(fixedValue)
 }
 

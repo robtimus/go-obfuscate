@@ -52,6 +52,7 @@ func NewObfuscator(obfuscate func(s string) string) Obfuscator {
 	parseAndObfuscate := func(s string) (string, error) {
 		return obfuscate(s), nil
 	}
+
 	return obfuscator{obfuscate: obfuscate, parseAndObfuscate: parseAndObfuscate, minPrefixLength: 1}
 }
 
@@ -65,8 +66,10 @@ func NewObfuscatorOnErrorLog(parseAndObfuscate func(s string) (string, error), l
 		if err != nil {
 			logError(logger, "ObfuscateString error: %v\n", err)
 		}
+
 		return result
 	}
+
 	return obfuscator{obfuscate: obfuscate, parseAndObfuscate: parseAndObfuscate, minPrefixLength: 1}
 }
 
@@ -79,8 +82,10 @@ func NewObfuscatorOnErrorInclude(parseAndObfuscate func(s string) (string, error
 		if err != nil {
 			result = fmt.Sprintf("%s<error: %v>", result, err)
 		}
+
 		return result
 	}
+
 	return obfuscator{obfuscate: obfuscate, parseAndObfuscate: parseAndObfuscate, minPrefixLength: 1}
 }
 
@@ -90,8 +95,10 @@ func NewObfuscatorOnErrorInclude(parseAndObfuscate func(s string) (string, error
 func NewObfuscatorOnErrorDiscard(parseAndObfuscate func(s string) (string, error)) Obfuscator {
 	obfuscate := func(s string) string {
 		result, _ := parseAndObfuscate(s)
+
 		return result
 	}
+
 	return obfuscator{obfuscate: obfuscate, parseAndObfuscate: parseAndObfuscate, minPrefixLength: 1}
 }
 
@@ -112,9 +119,11 @@ func NewObfuscatorPrefix(o Obfuscator, prefixLength int) ObfuscatorPrefix {
 	if obf, ok := o.(obfuscator); ok {
 		minPrefixLength = obf.minPrefixLength
 	}
+
 	if prefixLength < minPrefixLength {
 		log.Panicf("prefixLength: %d < %d", prefixLength, minPrefixLength)
 	}
+
 	return ObfuscatorPrefix{o, prefixLength}
 }
 
@@ -129,18 +138,23 @@ func (op ObfuscatorPrefix) Then(other Obfuscator) Obfuscator {
 		if len(s) <= lengthForFirst {
 			return first.ObfuscateString(s)
 		}
+
 		return first.ObfuscateString(s[:lengthForFirst]) + second.ObfuscateString(s[lengthForFirst:])
 	}
 	parseAndObfuscate := func(s string) (string, error) {
 		if len(s) <= lengthForFirst {
 			return first.ParseAndObfuscateString(s)
 		}
+
 		result1, err := first.ParseAndObfuscateString(s[:lengthForFirst])
 		if err != nil {
 			return result1, err
 		}
+
 		result2, err := second.ParseAndObfuscateString(s[lengthForFirst:])
+
 		return result1 + result2, err
 	}
+
 	return obfuscator{obfuscate: obfuscate, parseAndObfuscate: parseAndObfuscate, minPrefixLength: lengthForFirst + 1}
 }

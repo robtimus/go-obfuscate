@@ -18,6 +18,7 @@ func Maps[K comparable](obfuscators map[K]Obfuscator) MapObfuscator[K] {
 // ObfuscateMap obfuscates all values in a map.
 func (o MapObfuscator[K]) ObfuscateMap(m map[K]string) map[K]string {
 	result := map[K]string{}
+
 	for key, value := range m {
 		if obfuscator, ok := o.obfuscators[key]; ok {
 			result[key] = obfuscator.ObfuscateString(value)
@@ -25,22 +26,26 @@ func (o MapObfuscator[K]) ObfuscateMap(m map[K]string) map[K]string {
 			result[key] = value
 		}
 	}
+
 	return result
 }
 
 // ObfuscateMultiMap obfuscates all values in a map.
 func (o MapObfuscator[K]) ObfuscateMultiMap(m map[K][]string) map[K][]string {
 	result := map[K][]string{}
+
 	for key, values := range m {
 		if obfuscator, ok := o.obfuscators[key]; ok {
 			obfuscatedValues := make([]string, len(values))
 			for index, value := range values {
 				obfuscatedValues[index] = obfuscator.ObfuscateString(value)
 			}
+
 			result[key] = obfuscatedValues
 		} else {
 			result[key] = slices.Clone(values)
 		}
 	}
+
 	return result
 }

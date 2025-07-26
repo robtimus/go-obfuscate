@@ -16,6 +16,7 @@ func (om ObfuscationMode) String() string {
 	case InheritOverridable:
 		return "InheritOverridable"
 	}
+
 	return fmt.Sprintf("ObfuscationMode(%d)", int(om))
 }
 
@@ -38,5 +39,6 @@ func obfuscationModeOrDefault(obfuscationMode *ObfuscationMode, defaultObfuscati
 	if obfuscationMode == nil {
 		return defaultObfuscationMode
 	}
+
 	return *obfuscationMode
 }

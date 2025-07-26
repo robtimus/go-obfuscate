@@ -8,6 +8,7 @@ import (
 
 func TestAtFirst(t *testing.T) {
 	obfuscator := AtFirst("@").SplitTo(All(), WithFixedLength(5))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -21,6 +22,7 @@ func TestAtFirst(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -29,6 +31,7 @@ func TestAtFirst(t *testing.T) {
 
 func TestAtLast(t *testing.T) {
 	obfuscator := AtLast("@").SplitTo(All(), WithFixedLength(5))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -42,6 +45,7 @@ func TestAtLast(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -56,6 +60,7 @@ func TestAtNthNegativeOccurrence(t *testing.T) {
 
 func TestAtNthWithOccurrence0(t *testing.T) {
 	obfuscator := AtNth(".", 0).SplitTo(WithFixedValue("xxx"), WithFixedLength(5))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -71,6 +76,7 @@ func TestAtNthWithOccurrence0(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -79,6 +85,7 @@ func TestAtNthWithOccurrence0(t *testing.T) {
 
 func TestAtNthWithOccurrence1(t *testing.T) {
 	obfuscator := AtNth(".", 1).SplitTo(WithFixedValue("xxx"), WithFixedLength(5))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -94,6 +101,7 @@ func TestAtNthWithOccurrence1(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -102,6 +110,7 @@ func TestAtNthWithOccurrence1(t *testing.T) {
 
 func TestAtNthWithOccurrence2(t *testing.T) {
 	obfuscator := AtNth(".", 2).SplitTo(WithFixedValue("xxx"), WithFixedLength(5))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -116,6 +125,7 @@ func TestAtNthWithOccurrence2(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -135,6 +145,7 @@ func TestNewSplitPointWithSplitLength0(t *testing.T) {
 		return strings.Index(s, "@")
 	}, 0)
 	obfuscator := splitPoint.SplitTo(All(), WithFixedLengthWithMask(5, "x"))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -148,6 +159,7 @@ func TestNewSplitPointWithSplitLength0(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -159,6 +171,7 @@ func TestNewSplitPointWithSplitAtStart(t *testing.T) {
 		return 0
 	}, 0)
 	obfuscator := splitPoint.SplitTo(WithFixedLength(3), AllWithMask("x"))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -172,6 +185,7 @@ func TestNewSplitPointWithSplitAtStart(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})
@@ -183,6 +197,7 @@ func TestNewSplitPointWithSplitAtEnd(t *testing.T) {
 		return len(s)
 	}, 0)
 	obfuscator := splitPoint.SplitTo(WithFixedLength(3), WithFixedValue("xxx"))
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -196,6 +211,7 @@ func TestNewSplitPointWithSplitAtEnd(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 		})

@@ -88,11 +88,13 @@ func slicesDiffer(slice1, slice2 []string) bool {
 	if len(slice1) != len(slice2) {
 		return true
 	}
+
 	for i, value1 := range slice1 {
 		if value1 != slice2[i] {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -100,11 +102,13 @@ func mapsDiffer(map1, map2 map[string]string) bool {
 	if len(map1) != len(map2) {
 		return true
 	}
+
 	for key, value1 := range map1 {
 		if value2, ok := map2[key]; !ok || value1 != value2 {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -112,10 +116,12 @@ func multiMapsDiffer(map1, map2 map[string][]string) bool {
 	if len(map1) != len(map2) {
 		return true
 	}
+
 	for key, values1 := range map1 {
 		if values2, ok := map2[key]; !ok || slicesDiffer(values1, values2) {
 			return true
 		}
 	}
+
 	return false
 }

@@ -5,7 +5,6 @@ linters:
     - exhaustruct
     - forbidigo
     - gochecknoglobals
-    - nlreturn
     - testpackage
     - wrapcheck
     - wsl

@@ -7,6 +7,7 @@ import (
 
 func TestAll(t *testing.T) {
 	obfuscator := All()
+
 	parameters := []struct {
 		input, expected string
 	}{
@@ -19,6 +20,7 @@ func TestAll(t *testing.T) {
 	for i := range parameters {
 		input := parameters[i].input
 		expected := parameters[i].expected
+
 		t.Run(fmt.Sprintf("applied to '%s'", input), func(t *testing.T) {
 			testObfuscateString(t, obfuscator, input, expected)
 			testParseAndObfuscateString(t, obfuscator, input, expected)
@@ -28,6 +30,7 @@ func TestAll(t *testing.T) {
 
 func TestNone(t *testing.T) {
 	obfuscator := None()
+
 	inputs := []string{"foo", "foobar", "hello", "hello world"}
 	for _, input := range inputs {
 		expected := input
@@ -40,6 +43,7 @@ func TestNone(t *testing.T) {
 
 func TestWithFixedLength(t *testing.T) {
 	inputs := []string{"foo", "foobar", "hello", "hello world"}
+
 	parameters := []struct {
 		fixedLength int
 		expected    string
@@ -53,6 +57,7 @@ func TestWithFixedLength(t *testing.T) {
 		fixedLength := parameters[i].fixedLength
 		obfuscator := WithFixedLength(fixedLength)
 		expected := parameters[i].expected
+
 		for _, input := range inputs {
 			t.Run(fmt.Sprintf("WithFixedLength(%d) applied to '%s'", fixedLength, input), func(t *testing.T) {
 				testObfuscateString(t, obfuscator, input, expected)
@@ -68,6 +73,7 @@ func TestWithFixedLength(t *testing.T) {
 
 func TestWithFixedValue(t *testing.T) {
 	inputs := []string{"foo", "foobar", "hello", "hello world"}
+
 	fixedValues := []string{"", "obfuscated", "***"}
 	for _, fixedValue := range fixedValues {
 		obfuscator := WithFixedValue(fixedValue)
@@ -122,6 +128,7 @@ func testPanic(t *testing.T, name string, action func(), expectedMessage string)
 				t.Errorf("expected: %s, actual: %s", expectedMessage, r)
 			}
 		}()
+
 		action()
 		t.Errorf("expected an error")
 	})

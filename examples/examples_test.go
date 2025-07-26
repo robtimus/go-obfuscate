@@ -61,10 +61,12 @@ func TestObfuscateUpperCaseExample(t *testing.T) {
 
 func TestObfuscateNoneExample(t *testing.T) {
 	somePossiblyNilObfuscator := getNilObfuscator()
+
 	obfuscator := somePossiblyNilObfuscator
 	if obfuscator == nil {
 		obfuscator = obfuscate.None()
 	}
+
 	obfuscated := obfuscator.ObfuscateString("Hello World")
 	assertEqual(t, "Hello World", obfuscated)
 }
@@ -118,10 +120,13 @@ func TestHTTPHeadersExample(t *testing.T) {
 	})
 	obfuscatedAuthorization := headerObfuscator.ObfuscateHeaderValue("authorization", "Bearer someToken")
 	assertEqual(t, "***", obfuscatedAuthorization)
+
 	obfuscatedAuthorizations := headerObfuscator.ObfuscateHeaderValues("authorization", []string{"Bearer someToken"})
 	assertEqualSlices(t, []string{"***"}, obfuscatedAuthorizations)
+
 	obfuscatedContentType := headerObfuscator.ObfuscateHeaderValue("Content-Type", "application/json")
 	assertEqual(t, "application/json", obfuscatedContentType)
+
 	obfuscatedHeaders := headerObfuscator.ObfuscateHeaderMap(map[string]string{
 		"authorization": "Bearer someToken",
 		"content-type":  "application/json",
@@ -135,8 +140,10 @@ func TestHTTPParamsExample(t *testing.T) {
 		Build()
 	obfuscatedPassword := paramsObfuscator.ObfuscateParameter("password", "admin1234")
 	assertEqual(t, "***", obfuscatedPassword)
+
 	obfuscatedUsername := paramsObfuscator.ObfuscateParameter("username", "admin")
 	assertEqual(t, "admin", obfuscatedUsername)
+
 	obfuscatedParamString, err := paramsObfuscator.ParseAndObfuscateString("username=admin&password=admin1234")
 	assertEqual(t, "username=admin&password=***", obfuscatedParamString)
 	assertEqual(t, nil, err)
@@ -237,6 +244,7 @@ func assertEqualSlices[T comparable](t *testing.T, expected, actual []T) {
 	if len(expected) != len(actual) {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
+
 	for i, expectedValue := range expected {
 		if expectedValue != actual[i] {
 			t.Errorf("expected: '%v', actual: '%v'", expected, actual)
@@ -250,6 +258,7 @@ func assertEqualMaps[K comparable, V comparable](t *testing.T, expected, actual 
 	if len(expected) != len(actual) {
 		t.Errorf("expected: '%v', actual: '%v'", expected, actual)
 	}
+
 	for key, expectedValue := range expected {
 		if actualValue, ok := actual[key]; !ok || expectedValue != actualValue {
 			t.Errorf("expected: '%v', actual: '%v'", expected, actual)

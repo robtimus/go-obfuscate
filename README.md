@@ -111,6 +111,7 @@ obfuscator := somePossiblyNilObfuscator
 if obfuscator == nil {
     obfuscator = obfuscate.None()
 }
+
 obfuscated := obfuscator.ObfuscateString("Hello World")
 // obfuscated is "Hello World" if somePossiblyNilObfuscator was nil
 ```
