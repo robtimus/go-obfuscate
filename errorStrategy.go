@@ -31,7 +31,7 @@ const (
 	OnErrorDiscard
 )
 
-func logError(logger *log.Logger, format string, v ...any) {
+func logErrorf(logger *log.Logger, format string, v ...any) {
 	if logger == nil {
 		fmt.Printf(format, v...)
 	} else {

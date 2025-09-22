@@ -64,7 +64,7 @@ func NewObfuscatorOnErrorLog(parseAndObfuscate func(s string) (string, error), l
 	obfuscate := func(s string) string {
 		result, err := parseAndObfuscate(s)
 		if err != nil {
-			logError(logger, "ObfuscateString error: %v\n", err)
+			logErrorf(logger, "ObfuscateString error: %v\n", err)
 		}
 
 		return result

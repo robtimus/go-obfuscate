@@ -41,7 +41,7 @@ func (o JSONObfuscator) ObfuscateString(s string) string {
 	if err != nil {
 		switch o.onError {
 		case OnErrorLog:
-			logError(o.logger, "ObfuscateString error: %v\n", err)
+			logErrorf(o.logger, "ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
 			obfuscated = fmt.Sprintf("%s<error: %v>", obfuscated, err)
 		case OnErrorDiscard:
