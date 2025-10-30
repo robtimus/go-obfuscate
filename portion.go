@@ -138,7 +138,7 @@ func validateNonNegative(value int, name string) {
 	}
 }
 
-func valueOrDefault[T interface{}](value *T, defaultValue T) T {
+func valueOrDefault[T any](value *T, defaultValue T) T {
 	if value == nil {
 		return defaultValue
 	}
