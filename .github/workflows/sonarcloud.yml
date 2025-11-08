@@ -39,7 +39,7 @@ jobs:
       - name: go vet
         run: go vet -all -json ./... > go-vet.json
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           version: latest
           args: --output.checkstyle.path golangci-lint-report.xml
