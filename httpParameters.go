@@ -48,7 +48,7 @@ func (o HTTPParameterObfuscator) ObfuscateString(s string) string {
 		case OnErrorLog:
 			logErrorf(o.logger, "ObfuscateString error: %v\n", err)
 		case OnErrorInclude:
-			builder.WriteString(fmt.Sprintf("<error: %v>", err))
+			fmt.Fprintf(&builder, "<error: %v>", err)
 		case OnErrorDiscard:
 			break
 		}
