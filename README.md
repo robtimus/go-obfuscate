@@ -2,7 +2,6 @@
 [![Build Status](https://github.com/robtimus/go-obfuscate/actions/workflows/build.yml/badge.svg)](https://github.com/robtimus/go-obfuscate/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=robtimus%3Ago-obfuscate&metric=alert_status)](https://sonarcloud.io/summary/overall?id=robtimus%3Ago-obfuscate)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=robtimus%3Ago-obfuscate&metric=coverage)](https://sonarcloud.io/summary/overall?id=robtimus%3Ago-obfuscate)
-[![Known Vulnerabilities](https://snyk.io/test/github/robtimus/go-obfuscate/badge.svg)](https://snyk.io/test/github/robtimus/go-obfuscate)
 
 Provides functionality for obfuscating text. This can be useful for logging information that contains sensitive information.
 
