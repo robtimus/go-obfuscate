@@ -5,6 +5,7 @@ linters:
     - exhaustruct
     - forbidigo
     - gochecknoglobals
+    - gomodguard
     - testpackage
     - wrapcheck
     - wsl
